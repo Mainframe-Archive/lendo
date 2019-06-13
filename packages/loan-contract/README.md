@@ -19,7 +19,7 @@ This project uses ZeppelinOS for managing contract deployment/upgrading. Since D
 1. Make sure you have your seed words for `kovan` wallet exported as an environment variable called `MNEMONIC`; it is used by `truffle-config.js` to execute operations on the blockchain.
 
 ```shell
-$ export MNEMONIC = "here comes you seed words..."
+$ export MNEMONIC="here comes you seed words..."
 ```
 
 2. Create a zos session so you don't have to pass the network parameters for the next commands (optional):
