@@ -10,6 +10,10 @@ Assuming you are using a web3-enabled browser:
 
 3. Exchange ETH for DAI at: https://eth2dai.com/instant
 
+The tests assume you are using a HD wallet with at least 2 addresses, where address[0] will assume a borrower role and address[1] will assume a lender role inside the tests.
+
+Address[0] must have some ETH, enough to pay for the gas. Address[1] also must have some ETH, and must have some DAI to give to the borrower.
+
 ## Smart contract deployment
 
 This project uses ZeppelinOS for managing contract deployment/upgrading. Since DAI has only support for Kovan Testnet, we always use the `kovan` network configuration on `truffle-config.js`.

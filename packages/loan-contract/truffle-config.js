@@ -16,7 +16,7 @@ module.exports = {
           mnemonic,
           'https://kovan.infura.io/v3/8ec0911ee74c4583b1346bbc1afdf22d',
           0,
-          3,
+          2,
         )
       },
       network_id: 42,
