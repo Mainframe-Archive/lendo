@@ -3,19 +3,21 @@ import logo from './logo.svg'
 import MainframeSDK from '@mainframe/sdk'
 // import styled from 'styled-components'
 import { ethers } from 'ethers'
-import { abi } from './abi'
+// import { abi } from './abi'
+import './App.css'
 
-const provider = ethers.providers.getDefaultProvider('kovan')
+const abi = '';
+const provider = ethers.getDefaultProvider('kovan')
 const address = '0xFB23eC4FA01e228c2da6a1F3563F4Ba71Ffb1604'
 const privateKey =
   '0x218CB65C69887CA18EAED478FA319BBE579DDB25759E23CA959BFE3D4BA6E51B'
 
 const wallet = new ethers.Wallet(privateKey, provider)
-const contract = new ethers.Contract(address, abi, wallet)
+// const contract = new ethers.Contract(address, abi, wallet)
 
-var sendPromise = contract.setValue('Hello World')
+// var sendPromise = contract.setValue('Hello World')
 
-import './App.css'
+
 
 // const Container = styled.View`
 //   flex: 1;
@@ -47,15 +49,15 @@ class App extends Component {
   createNewLoanContract = (a, b) => {
     a.preventDefault()
     console.log('call smart contract')
-    const sendPromise = contract.setValue('newLoan')
+    // const sendPromise = contract.setValue('newLoan')
 
-    sendPromise.then(function(transaction) {
-      console.log(transaction)
-    })
+    // sendPromise.then(function(transaction) {
+    //   console.log(transaction)
+    // })
   }
 
   render() {
-    console.log('abi', abi)
+    // console.log('abi', abi)
     return (
       <div className="App">
         <h1>My Loans</h1>
