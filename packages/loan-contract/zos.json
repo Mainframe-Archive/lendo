@@ -1,0 +1,8 @@
+{
+  "zosversion": "2.2",
+  "name": "loan-contract",
+  "version": "0.1.0",
+  "contracts": {
+    "Loan": "Loan"
+  }
+}
