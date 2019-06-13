@@ -15,15 +15,6 @@ module.exports = {
         return new HDWalletProvider(
           mnemonic,
           'https://kovan.infura.io/v3/8ec0911ee74c4583b1346bbc1afdf22d',
-        )
-      },
-      network_id: 42,
-    },
-    test: {
-      provider: function() {
-        return new HDWalletProvider(
-          mnemonic,
-          'https://kovan.infura.io/v3/8ec0911ee74c4583b1346bbc1afdf22d',
           0,
           3,
         )
