@@ -10,6 +10,36 @@ Assuming you are using a web3-enabled browser:
 
 3. Exchange ETH for DAI at: https://eth2dai.com/instant
 
+## Smart contract deployment
+
+This project uses ZeppelinOS for managing contract deployment/upgrading. Since DAI has only support for Kovan Testnet, we always use the `kovan` network configuration on `truffle-config.js`.
+
+### Contract upgrade
+
+1. Make sure you have your seed words for `kovan` wallet exported as an environment variable called `MNEMONIC`; it is used by `truffle-config.js` to execute operations on the blockchain.
+
+```shell
+$ export MNEMONIC = "here comes you seed words..."
+```
+
+2. Create a zos session so you don't have to pass the network parameters for the next commands (optional):
+
+```shell
+$ npx zos session --network kovan
+```
+
+3. Deploy the updated logic contract:
+
+```shell
+$ npx zos push
+```
+
+4. Update the proxy contract with the new logic contract address:
+
+```shell
+$ npx zos update --network kovan
+```
+
 ## Overview
 
 DAI is available only on Kovan testnet, so we need to first get some testnet ETH and then convert it to testnet DAI.
