@@ -7,7 +7,9 @@
     "ethers": "^4.0.30",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "styled-components": "^4.3.1"
   },
   "homepage": "./",
   "scripts": {
@@ -15,7 +17,7 @@
     "build": "react-scripts build",
     "lint": "eslint ./src --fix",
     "test": "react-scripts test --passWithNoTests",
-    "test:types": "flow check",
+    "flow": "flow check",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
