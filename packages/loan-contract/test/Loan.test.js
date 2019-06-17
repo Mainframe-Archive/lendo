@@ -16,8 +16,8 @@ const ERC20 = Contracts.getFromNodeModules(
 )
 
 contract('Loan', function(accounts) {
-  const borrower = accounts[0]
-  const lender = accounts[1]
+  const borrowerAddress = accounts[0]
+  const lenderAddress = accounts[1]
 
   beforeEach(async function() {
     this.project = await TestHelper()
@@ -28,9 +28,9 @@ contract('Loan', function(accounts) {
         'MOCKDAI',
         18,
         (100e18).toString(),
-        lender,
-        [lender],
-        [lender],
+        lenderAddress,
+        [lenderAddress],
+        [lenderAddress],
       ],
     })
 
@@ -42,14 +42,14 @@ contract('Loan', function(accounts) {
 
   it('should not allow to borrow money from yourself', async function() {
     this.loanProxy.methods
-      .requestLoan(borrower, 10)
-      .send({ from: borrower, gas: 5000000 }).should.be.rejected
+      .requestLoan(borrowerAddress, 10)
+      .send({ from: borrowerAddress, gas: 5000000 }).should.be.rejected
 
     const borrowerBalance = await this.daiMockProxy.methods
-      .balanceOf(borrower)
+      .balanceOf(borrowerAddress)
       .call()
     const lenderBalance = await this.daiMockProxy.methods
-      .balanceOf(lender)
+      .balanceOf(lenderAddress)
       .call()
 
     borrowerBalance.should.be.equal('0')
@@ -58,30 +58,36 @@ contract('Loan', function(accounts) {
 
   it('should allow the lender to approve the loan', async function() {
     const borrowerBalance = await this.daiMockProxy.methods
-      .balanceOf(borrower)
+      .balanceOf(borrowerAddress)
       .call()
     const lenderBalance = await this.daiMockProxy.methods
-      .balanceOf(lender)
+      .balanceOf(lenderAddress)
       .call()
+    borrowerBalance.should.be.equal('0')
+    lenderBalance.should.be.equal((100e18).toString())
 
     const proxyAddress = this.loanProxy.options.address
 
     let lenderAllowance = await this.daiMockProxy.methods
-      .allowance(lender, proxyAddress)
+      .allowance(lenderAddress, proxyAddress)
       .call()
     lenderAllowance.should.be.equal('0')
 
     const amount = (10e18).toString()
     await this.daiMockProxy.methods
       .approve(proxyAddress, amount)
-      .send({ from: lender, gas: 5000000 })
+      .send({ from: lenderAddress, gas: 5000000 })
     lenderAllowance = await this.daiMockProxy.methods
-      .allowance(lender, proxyAddress)
+      .allowance(lenderAddress, proxyAddress)
       .call()
     lenderAllowance.should.be.equal(amount)
 
-    const ret = await this.loanProxy.methods
-      .requestLoan(lender, amount)
-      .send({ from: borrower, gas: 5000000 })
+    const { events } = await this.loanProxy.methods
+      .requestLoan(lenderAddress, amount)
+      .send({ from: borrowerAddress, gas: 5000000 })
+    events.should.have.key('LoanRequested')
+    const { borrower, lender } = events['LoanRequested'].returnValues
+    borrower.should.be.equal(borrowerAddress)
+    lender.should.be.equal(lenderAddress)
   })
 })

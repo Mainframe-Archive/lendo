@@ -69,7 +69,7 @@ contract Loan is Initializable {
   function requestLoan(address lender, uint256 amount) public returns (uint256) {
     require(lender != msg.sender, "You can't borrow money from yourself");
 
-    LoanData memory loan = LoanData("", lender, msg.sender, amount, LoanStatuses.Requested);
+    LoanData memory loan = LoanData(lender, msg.sender, amount, LoanStatuses.Requested);
     totalLoanCount = loans.push(loan);
     uint256 loanIdx = totalLoanCount - 1;
     loansByLender[lender].push(loanIdx);
