@@ -1,19 +1,9 @@
 // @flow
-import React, { useState } from 'react'
-// import MainframeSDK from '@mainframe/sdk'
+import React, { useState, useContext, useEffect } from 'react'
 // import styled from 'styled-components'
-// import { ethers } from 'ethers'
-// import { abi } from '../abi'
+import MainframeContext from '../contexts/Mainframe'
 
-// const abi = ''
-// const provider = ethers.getDefaultProvider('kovan')
-// const address = '0xFB23eC4FA01e228c2da6a1F3563F4Ba71Ffb1604'
-// const privateKey =
-//   '0x218CB65C69887CA18EAED478FA319BBE579DDB25759E23CA959BFE3D4BA6E51B'
-
-// const wallet = new ethers.Wallet(privateKey, provider)
-// const contract = new ethers.Contract(address, abi, wallet)
-// const sdk = new MainframeSDK()
+import { abi, contractAddress } from '../abi'
 
 // const Container = styled.View`
 //   flex: 1;
@@ -24,12 +14,80 @@ import React, { useState } from 'react'
 // `
 
 export default function Dashboard() {
-  // const [contacts, setContracts] = useState([])
+  const { sdk, web3 } = useContext(MainframeContext)
   const [loans] = useState([])
   const [showNewLoan, setShowNewLoan] = useState(false)
+  const [selectedContact, setSelectedContact] = useState('')
+  const [loanAmount, setLoanAmount] = useState(0)
+  const [loanDueDate, setLoanDueDate] = useState()
+  const [loadingStatus, setLoadingStatus] = useState(false)
+  const [showMsg, setShowMsg] = useState(false)
 
+  const [contract, setContract] = useState()
+  useEffect(() => {
+    const initializeContract = async () => {
+      const contract = new web3.eth.Contract(abi, contractAddress)
+      setContract(contract)
+    }
+    initializeContract()
+  }, [web3])
+
+  // const [contacts, setContacts] = useState([])
+  // useEffect(() => {
+  //   const initializeContacts = async () => {
+  //     const contacts = await sdk.contacts.selectContacts()
+  //     const newContacts = contacts.map(contact => ({
+  //       ethAddress: contact.data.profile.ethAddress,
+  //       name: contact.data.profile.name,
+  //     }))
+  //     setContacts(newContacts)
+  //   }
+  //   initializeContacts()
+  // }, [sdk])
+
+  const [ownAccount, setOwnAccount] = useState([])
+  useEffect(() => {
+    const initializeOwnAccount = async () => {
+      const ownAccount = await sdk.ethereum.getDefaultAccount()
+      setOwnAccount(ownAccount)
+    }
+    initializeOwnAccount()
+  }, [sdk])
+
+  async function selectContactFromMainframe() {
+    console.log('oi')
+    const contact = await sdk.contacts.selectContact()
+    if (contact) {
+      const { ethAddress } = contact.data.profile
+      if (!ethAddress) {
+        console.log('The selected contact does not have a public ETH address')
+      } else {
+        setSelectedContact(ethAddress)
+      }
+    }
+  }
+
+  async function createNewLoanContract(event) {
+    event.preventDefault()
+    setLoadingStatus(true)
+
+    const writeLoan = await contract.methods
+      .requestLoanRob(selectedContact, loanAmount)
+      .send({ from: ownAccount })
+
+    setShowMsg(true)
+    setShowNewLoan(false)
+    setLoadingStatus(false)
+
+    setTimeout(() => {
+      setShowMsg(false)
+    }, 3000)
+  }
+
+  if (loadingStatus) return <div>Loading...</div>
   return (
     <div className="App">
+      <h1>{showMsg ? 'Loan created successfully!' : ''}</h1>
       <h1>My Loans</h1>
       {loans.map((loan, key) => (
         <div key={key}>{loan}</div>
@@ -38,14 +96,45 @@ export default function Dashboard() {
         <form style={{ justifyContent: 'center' }}>
           <div className="form-container">
             <div className="row-item">
-              <div>Borrower Address</div>
-              <input type="text" />
+              <div>Lender</div>
+              <button
+                type='button'
+                onClick={selectContactFromMainframe}>
+                Select your Friend
+              </button>
+              <div>{selectedContact}</div>
             </div>
             <div className="row-item">
-              <div>Amount</div>
-              <input label="Amount" type="text" />
+              <div>Amount (DAI)</div>
+              <input
+                value={loanAmount}
+                onChange={e => setLoanAmount(e.target.value)}
+                type="text"
+              />
             </div>
-            <button onClick={createNewLoanContract}> Send Invite </button>
+            <div className="row-item">
+              <div>Due Date</div>
+              <input
+                value={loanDueDate}
+                onChange={e => setLoanDueDate(e.target.value)}
+                type="date"
+              />
+            </div>
+            <div className="row-item">
+              <div>Payment Plan</div>
+              <input disabled type="text" value={'One time'} />
+            </div>
+            <div className="row-item">
+              <div>Interest</div>
+              <input disabled type="text" value={'1.27%'} />
+            </div>
+            <div className="row-item" style={{ marginTop: '15px' }}>
+              <div>Total Debit Value: {calcDebt(loanAmount)}</div>
+            </div>
+            <button onClick={event => createNewLoanContract(event)}>
+              {' '}
+              Send Loan Request
+            </button>
           </div>
         </form>
       ) : (
@@ -58,11 +147,8 @@ export default function Dashboard() {
   )
 }
 
-
-function createNewLoanContract(event: Event): void {
-  event.preventDefault()
-
-  // contract.setValue('newLoan').then(transaction => {
-  //   console.log(transaction)
-  // })
+function calcDebt(amount) {
+  const interest = 0.0127
+  const newAmount = amount * (1 + interest)
+  return newAmount
 }
