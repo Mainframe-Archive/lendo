@@ -9,7 +9,7 @@ contract Loan is Initializable {
   }
 
   address constant KOVAN_DAI_CONTRACT_ADDRESS = 0xC4375B7De8af5a38a93548eb8453a498222C4fF2;
-
+  string public LoanStatus;
   // TODO: move all possible data to swarm encrypted storage
   struct LoanData {
     string swarmHash;
@@ -40,9 +40,10 @@ contract Loan is Initializable {
   }
 
   // Contains all created loans
-  LoanData[] loans;
+  LoanData[] public loans;
 
-  uint256 totalLoanCount;
+  uint256 public totalLoanCount;
+
 
   // Addresses the loan data mapped by the lender address; One lender
   // can give money to many borrowers.
@@ -57,11 +58,17 @@ contract Loan is Initializable {
   // The key is the borrower address, the value is an array of numeric indexes
   // to elements from the loans array.
   mapping (address => uint256[]) public loansByBorrower;
+  mapping (address => LoanData) public loansByBorrowerRob;
+
 
   event LoanRequested (
     address borrower,
     address lender
   );
+
+  function getLoanAtAddress(address borrowerAddress) public view returns(address, address, uint256, string memory, LoanStatuses status) {
+    return (loansByBorrowerRob[borrowerAddress].lender, loansByBorrowerRob[borrowerAddress].borrower, loansByBorrowerRob[borrowerAddress].amount, loansByBorrowerRob[borrowerAddress].swarmHash, loansByBorrowerRob[borrowerAddress].status);
+  }
 
   // Called by the borrower who wants to request money from a known lender
   //
@@ -75,9 +82,23 @@ contract Loan is Initializable {
     uint256 loanIdx = totalLoanCount - 1;
     loansByLender[lender].push(loanIdx);
     uint256 loanCount = loansByBorrower[msg.sender].push(loanIdx);
+    loansByBorrowerRob[msg.sender] = loan;
 
     emit LoanRequested(msg.sender, lender);
     return loanCount;
+  }
+
+  function requestLoanRob(address lender, uint256 amount) public returns (string memory) {
+    require(lender != msg.sender, "You can't borrow money from yourself");
+
+    loansByBorrowerRob[msg.sender].lender = lender;
+    loansByBorrowerRob[msg.sender].borrower = msg.sender;
+    loansByBorrowerRob[msg.sender].amount = amount;
+    loansByBorrowerRob[msg.sender].status = LoanStatuses.Approved;
+    loansByBorrowerRob[msg.sender].swarmHash = 'teste2';
+
+    emit LoanRequested(msg.sender, lender);
+    return "done";
   }
 
   // Called by the lender to approve a lend request made by a borrower

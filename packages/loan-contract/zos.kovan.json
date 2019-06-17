@@ -1,11 +1,11 @@
 {
   "contracts": {
     "Loan": {
-      "address": "0xaCAC92C30945b8fc47D341662C60b436c40B1AD4",
-      "constructorCode": "608060405234801561001057600080fd5b5061112e806100206000396000f3fe",
-      "bodyBytecodeHash": "5cf0fc7d405286be8fa7b55af9439292298cf1339a2b95b1428fd5008edc16d3",
-      "localBytecodeHash": "6ad72ef8e71cbaa4b4b036a68d6e2dea58f0388f6ba82e2471cc8de601cc69f1",
-      "deployedBytecodeHash": "6ad72ef8e71cbaa4b4b036a68d6e2dea58f0388f6ba82e2471cc8de601cc69f1",
+      "address": "0x6D49c3437A10631e9904c5425FCcB59c13823e84",
+      "constructorCode": "608060405234801561001057600080fd5b506120ff806100206000396000f3fe",
+      "bodyBytecodeHash": "c577805a30ff29e509a5baf4420bc41522c423808548946848e54aa0319e27ef",
+      "localBytecodeHash": "026f0ecfdf28686fb15288741528bdbc6832c9cd1532137f190ec9f903523483",
+      "deployedBytecodeHash": "026f0ecfdf28686fb15288741528bdbc6832c9cd1532137f190ec9f903523483",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -24,6 +24,11 @@
           "kind": "array",
           "label": "uint256[50]"
         },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
         "t_struct<Loan.LoanData>": {
           "id": "t_struct<Loan.LoanData>",
           "kind": "struct",
@@ -31,40 +36,35 @@
           "members": [
             {
               "label": "swarmHash",
-              "astId": 16,
+              "astId": 18,
               "type": "t_string",
-              "src": "399:16:0"
+              "src": "426:16:0"
             },
             {
               "label": "lender",
-              "astId": 18,
+              "astId": 20,
               "type": "t_address",
-              "src": "448:14:0"
+              "src": "475:14:0"
             },
             {
               "label": "borrower",
-              "astId": 20,
+              "astId": 22,
               "type": "t_address",
-              "src": "497:16:0"
+              "src": "524:16:0"
             },
             {
               "label": "amount",
-              "astId": 22,
+              "astId": 24,
               "type": "t_uint256",
-              "src": "541:14:0"
+              "src": "568:14:0"
             },
             {
               "label": "status",
-              "astId": 24,
+              "astId": 26,
               "type": "t_enum<Loan.LoanStatuses>",
-              "src": "576:19:0"
+              "src": "603:19:0"
             }
           ]
-        },
-        "t_string": {
-          "id": "t_string",
-          "kind": "elementary",
-          "label": "string"
         },
         "t_address": {
           "id": "t_address",
@@ -100,6 +100,12 @@
           "valueType": "t_array:dyn<t_uint256>",
           "label": "mapping(key => uint256[])",
           "kind": "mapping"
+        },
+        "t_mapping<t_struct<Loan.LoanData>>": {
+          "id": "t_mapping<t_struct<Loan.LoanData>>",
+          "valueType": "t_struct<Loan.LoanData>",
+          "label": "mapping(key => Loan.LoanData)",
+          "kind": "mapping"
         }
       },
       "storage": [
@@ -107,7 +113,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 334,
+          "astId": 453,
           "type": "t_bool",
           "src": "757:24:2"
         },
@@ -115,7 +121,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 336,
+          "astId": 455,
           "type": "t_bool",
           "src": "876:25:2"
         },
@@ -123,41 +129,57 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 392,
+          "astId": 511,
           "type": "t_array:50<t_uint256>",
           "src": "1951:29:2"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
+          "label": "LoanStatus",
+          "astId": 16,
+          "type": "t_string",
+          "src": "315:24:0"
+        },
+        {
+          "contract": "Loan",
+          "path": "contracts/Loan.sol",
           "label": "loans",
-          "astId": 32,
+          "astId": 34,
           "type": "t_array:dyn<t_struct<Loan.LoanData>>",
-          "src": "813:16:0"
+          "src": "840:23:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "totalLoanCount",
-          "astId": 34,
+          "astId": 36,
           "type": "t_uint256",
-          "src": "834:22:0"
+          "src": "868:29:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "loansByLender",
-          "astId": 39,
+          "astId": 41,
           "type": "t_mapping<t_array:dyn<t_uint256>>",
-          "src": "1091:51:0"
+          "src": "1133:51:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "loansByBorrower",
-          "astId": 44,
+          "astId": 46,
           "type": "t_mapping<t_array:dyn<t_uint256>>",
-          "src": "1385:53:0"
+          "src": "1427:53:0"
+        },
+        {
+          "contract": "Loan",
+          "path": "contracts/Loan.sol",
+          "label": "loansByBorrowerRob",
+          "astId": 50,
+          "type": "t_mapping<t_struct<Loan.LoanData>>",
+          "src": "1484:55:0"
         }
       ],
       "warnings": {
@@ -165,7 +187,26 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [
+          {
+            "contract": "Loan",
+            "path": "contracts/Loan.sol",
+            "label": "loans",
+            "astId": 34,
+            "type": "t_array:dyn<t_struct<Loan.LoanData>>",
+            "src": "840:23:0"
+          },
+          {
+            "contract": "Loan",
+            "path": "contracts/Loan.sol",
+            "label": "loansByBorrowerRob",
+            "astId": 50,
+            "type": "t_mapping<t_struct<Loan.LoanData>>",
+            "src": "1484:55:0"
+          }
+        ],
+        "storageDiff": []
       }
     }
   },
@@ -173,15 +214,15 @@
   "proxies": {
     "loan-contract/Loan": [
       {
-        "address": "0xCc4Bf0dc70711CBF3db29793Fa4D2d377808BC14",
+        "address": "0x9D6427182e601Ba96eECcc28872aa93f90C58762",
         "version": "0.1.0",
-        "implementation": "0xaCAC92C30945b8fc47D341662C60b436c40B1AD4"
+        "implementation": "0x6D49c3437A10631e9904c5425FCcB59c13823e84"
       }
     ]
   },
   "zosversion": "2.2",
   "version": "0.1.0",
   "proxyAdmin": {
-    "address": "0x4420a1C6dDD6F1afb0671E8A29D7FfdE4eFa2192"
+    "address": "0xBCdD5a3B635AEC057BCd0f11138F2cc3936Fe8eD"
   }
 }
