@@ -12,13 +12,26 @@ import Requests from './pages/Requests'
 import { defaultFontFamily, defaultFontSize, defaultTextColor } from './theme'
 
 const GlobalStyles = createGlobalStyle`
+  html {
+    font-size: ${defaultFontSize};
+  }
+  
   body {
+    background-color: white;
     margin: 0;
     font-family: ${defaultFontFamily};
-    font-size: ${defaultFontSize};
     color: ${defaultTextColor};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  #root {
+    display: flex;
+    height: 100vh;
   }
 `
 

@@ -5,4 +5,4 @@ export const defaultFontFamily = `'Muli', -apple-system, BlinkMacSystemFont, 'Ro
 export const defaultTextColor = '#232323'
 
 // Sizes
-export const defaultFontSize = '13px'
+export const defaultFontSize = '10px'
