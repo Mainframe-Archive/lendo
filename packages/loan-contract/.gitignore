@@ -92,4 +92,4 @@ typings/
 
 build/
 .zos.session
-
+zos.dev-*.json

@@ -1,19 +1,18 @@
 pragma solidity ^0.5.0;
 
 import "zos-lib/contracts/Initializable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-eth/contracts/token/ERC20/IERC20.sol";
 
 contract Loan is Initializable {
 
-  function initialize() public initializer {
+  function initialize(address _erc20Address) public initializer {
+    erc20Address = _erc20Address;
   }
 
-  address constant KOVAN_DAI_CONTRACT_ADDRESS = 0xC4375B7De8af5a38a93548eb8453a498222C4fF2;
+  // Stores the token asset ERC20 contract address
+  address public erc20Address;
 
-  // TODO: move all possible data to swarm encrypted storage
   struct LoanData {
-    string swarmHash;
-
     // Lender eth address
     address lender;
 
@@ -40,9 +39,9 @@ contract Loan is Initializable {
   }
 
   // Contains all created loans
-  LoanData[] loans;
+  LoanData[] public loans;
 
-  uint256 totalLoanCount;
+  uint256 public totalLoanCount;
 
   // Addresses the loan data mapped by the lender address; One lender
   // can give money to many borrowers.
@@ -88,7 +87,7 @@ contract Loan is Initializable {
 
     // Check if the lender has previously approved this contract to spend
     // the necessary amount of tokens
-    IERC20 dai = IERC20(KOVAN_DAI_CONTRACT_ADDRESS);
+    IERC20 dai = IERC20(erc20Address);
     require(dai.allowance(msg.sender, address(this)) >= loan.amount, "Cannot spend required amount of DAI on behalf of caller");
 
     require(dai.transferFrom(msg.sender, loan.borrower, loan.amount), "Could not transfer tokens to the borrower");
@@ -101,7 +100,7 @@ contract Loan is Initializable {
     LoanData storage loan = loans[globalIndex];
     require(loan.status == LoanStatuses.Approved, "Loan must be in Approved status");
 
-    IERC20 dai = IERC20(KOVAN_DAI_CONTRACT_ADDRESS);
+    IERC20 dai = IERC20(erc20Address);
     require(dai.allowance(msg.sender, address(this)) >= loan.amount, "Cannot spend required amount of DAI on behalf of caller");
 
     require(dai.transferFrom(msg.sender, loan.lender, loan.amount), "Could not transfer tokens to the lender");

@@ -1,9 +1,3 @@
-const {
-  BN,
-  constants,
-  expectEvent,
-  expectRevert,
-} = require('openzeppelin-test-helpers')
 const { TestHelper } = require('zos')
 const { Contracts, ZWeb3 } = require('zos-lib')
 const daiAbi = require('./dai-abi.json')
@@ -16,9 +10,10 @@ chai.use(chaiAsPromised)
 chai.should()
 
 const Loan = Contracts.getFromLocal('Loan')
-
-const KOVAN_DAI_CONTRACT = '0xC4375B7De8af5a38a93548eb8453a498222C4fF2'
-const daiContract = ZWeb3.contract(daiAbi, KOVAN_DAI_CONTRACT)
+const ERC20 = Contracts.getFromNodeModules(
+  'openzeppelin-eth',
+  'StandaloneERC20',
+)
 
 contract('Loan', function(accounts) {
   const borrower = accounts[0]
@@ -26,40 +21,67 @@ contract('Loan', function(accounts) {
 
   beforeEach(async function() {
     this.project = await TestHelper()
-    this.proxy = await this.project.createProxy(Loan)
+
+    this.daiMockProxy = await this.project.createProxy(ERC20, {
+      initArgs: [
+        'MockDAI',
+        'MOCKDAI',
+        18,
+        (100e18).toString(),
+        lender,
+        [lender],
+        [lender],
+      ],
+    })
+
+    this.loanProxy = await this.project.createProxy(Loan, {
+      initMethod: 'initialize',
+      initArgs: [this.daiMockProxy.options.address],
+    })
   })
 
-  it('should not allow to borrow money from yourself', function() {
-    return this.proxy.methods
+  it('should not allow to borrow money from yourself', async function() {
+    this.loanProxy.methods
       .requestLoan(borrower, 10)
-      .send({ from: borrower }).should.be.rejected
+      .send({ from: borrower, gas: 5000000 }).should.be.rejected
+
+    const borrowerBalance = await this.daiMockProxy.methods
+      .balanceOf(borrower)
+      .call()
+    const lenderBalance = await this.daiMockProxy.methods
+      .balanceOf(lender)
+      .call()
+
+    borrowerBalance.should.be.equal('0')
+    lenderBalance.should.be.equal((100e18).toString())
   })
 
   it('should allow the lender to approve the loan', async function() {
-    const borrowerBalance = new BN(
-      await daiContract.methods.balanceOf(borrower).call(),
-    )
-    const lenderBalance = new BN(
-      await daiContract.methods.balanceOf(lender).call(),
-    )
-    const proxyAddress = this.proxy.options.address
+    const borrowerBalance = await this.daiMockProxy.methods
+      .balanceOf(borrower)
+      .call()
+    const lenderBalance = await this.daiMockProxy.methods
+      .balanceOf(lender)
+      .call()
 
-    let lenderAllowance = new BN(
-      await daiContract.methods.allowance(lender, proxyAddress).call(),
-    )
-    lenderAllowance.should.be.bignumber.equal(new BN(0))
-    const amount = new BN(10)
+    const proxyAddress = this.loanProxy.options.address
 
-    await daiContract.methods
-      .approve(proxyAddress, amount.toString())
-      .send({ from: lender })
-    lenderAllowance = new BN(
-      await daiContract.methods.allowance(lender, proxyAddress).call(),
-    )
-    lenderAllowance.should.be.bignumber.equal(amount)
+    let lenderAllowance = await this.daiMockProxy.methods
+      .allowance(lender, proxyAddress)
+      .call()
+    lenderAllowance.should.be.equal('0')
 
-    const idx = await this.proxy.methods
-      .requestLoan(lender, amount.toString())
-      .send({ from: borrower })
+    const amount = (10e18).toString()
+    await this.daiMockProxy.methods
+      .approve(proxyAddress, amount)
+      .send({ from: lender, gas: 5000000 })
+    lenderAllowance = await this.daiMockProxy.methods
+      .allowance(lender, proxyAddress)
+      .call()
+    lenderAllowance.should.be.equal(amount)
+
+    const ret = await this.loanProxy.methods
+      .requestLoan(lender, amount)
+      .send({ from: borrower, gas: 5000000 })
   })
 })
