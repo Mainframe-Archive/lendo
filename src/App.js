@@ -1,36 +1,55 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import MainframeSDK from '@mainframe/sdk'
+// @flow
+import React from 'react'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
-import './App.css';
+import { createGlobalStyle } from 'styled-components'
 
-class App extends Component {
-  constructor() {
-    super()
-    this.sdk = new MainframeSDK()
+import MainframeContext, { sdk, web3 } from './contexts/Mainframe'
+import Sidebar from './ui/Sidebar'
+
+import Dashboard from './pages/Dashboard'
+import Loaned from './pages/Loaned'
+import Borrowed from './pages/Borrowed'
+import Requests from './pages/Requests'
+import { defaultFontFamily, defaultFontSize, defaultTextColor } from './theme'
+
+const GlobalStyles = createGlobalStyle`
+  html {
+    font-size: ${defaultFontSize};
   }
 
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+  body {
+    background-color: white;
+    margin: 0;
+    font-family: ${defaultFontFamily};
+    color: ${defaultTextColor};
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
+  * {
+    box-sizing: border-box;
+  }
+
+  #root {
+    display: flex;
+    height: 100vh;
+  }
+`
+export default function App() {
+  return (
+    <MainframeContext.Provider value={{ sdk, web3 }}>
+      <Router>
+        <GlobalStyles />
+        <Sidebar />
+        <Switch>
+          <Route exact path="/" component={Dashboard} />
+          <Route path="/loaned" component={Loaned} />
+          <Route path="/borrowed" component={Borrowed} />
+          <Route path="/loaned" component={Loaned} />
+          <Route path="/requests" component={Requests} />
+        </Switch>
+      </Router>
+    </MainframeContext.Provider>
+  )
 }
-
-export default App;
