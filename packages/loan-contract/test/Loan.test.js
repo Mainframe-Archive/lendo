@@ -60,7 +60,7 @@ contract('Loan', function(accounts) {
     await balancesShouldBe(this.daiMockProxy, '0', (100e18).toString())
 
     this.loanProxy.methods
-      .requestLoan(borrowerAddress, 10)
+      .requestLoan(borrowerAddress, 'This request should actually fail', 10)
       .send({ from: borrowerAddress, gas: 5000000 }).should.be.rejected
 
     // Check if balances remains the same after the request attempt
@@ -90,12 +90,13 @@ contract('Loan', function(accounts) {
 
     // Request loan
     const { events } = await this.loanProxy.methods
-      .requestLoan(lenderAddress, amount)
+      .requestLoan(lenderAddress, 'This is a test loan request', amount)
       .send({ from: borrowerAddress, gas: 5000000 })
     events.should.have.key('LoanRequested')
-    const { borrower, lender } = events['LoanRequested'].returnValues
+    const { borrower, lender, name } = events['LoanRequested'].returnValues
     borrower.should.be.equal(borrowerAddress)
     lender.should.be.equal(lenderAddress)
+    name.should.be.equal('This is a test loan request')
 
     // Balances should still be the same because only the request happened
     await balancesShouldBe(this.daiMockProxy, '0', (100e18).toString())
