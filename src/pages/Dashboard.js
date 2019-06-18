@@ -49,7 +49,7 @@ export default function Dashboard() {
       const newLoans = await contract.methods
         .getLoanAtAddress(ownAccount)
         .call()
-      setLoans(Object.entries(newLoans))
+      setLoans(Object.entries<Array<Array<string, any>>>(newLoans))
     }
     fetchForLoans()
   }, [contract])
@@ -69,18 +69,19 @@ export default function Dashboard() {
   async function createNewLoanContract(event) {
     event.preventDefault()
     setLoadingStatus(true)
+    if (contract) {
+      const writeLoan = await contract.methods
+        .requestLoanRob(selectedContact, loanAmount)
+        .send({ from: ownAccount })
 
-    const writeLoan = await contract.methods
-      .requestLoanRob(selectedContact, loanAmount)
-      .send({ from: ownAccount })
+      setShowMsg(true)
+      setShowNewLoan(false)
+      setLoadingStatus(false)
 
-    setShowMsg(true)
-    setShowNewLoan(false)
-    setLoadingStatus(false)
-
-    setTimeout(() => {
-      setShowMsg(false)
-    }, 3000)
+      setTimeout(() => {
+        setShowMsg(false)
+      }, 3000)
+    }
   }
 
   if (loadingStatus) return <div>Loading...</div>
