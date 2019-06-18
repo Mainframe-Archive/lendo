@@ -49,7 +49,7 @@ export default function Dashboard() {
       const newLoans = await contract.methods
         .getLoanAtAddress(ownAccount)
         .call()
-      setLoans(Object.entries<Array<Array<string, any>>>(newLoans))
+      setLoans(Object.entries(newLoans))
     }
     fetchForLoans()
   }, [contract])
