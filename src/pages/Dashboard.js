@@ -15,7 +15,6 @@ import { abi, contractAddress } from '../abi'
 
 export default function Dashboard() {
   const { sdk, web3 } = useContext(MainframeContext)
-  const [loans] = useState([])
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
   const [loanAmount, setLoanAmount] = useState(0)
@@ -32,20 +31,7 @@ export default function Dashboard() {
     initializeContract()
   }, [web3])
 
-  // const [contacts, setContacts] = useState([])
-  // useEffect(() => {
-  //   const initializeContacts = async () => {
-  //     const contacts = await sdk.contacts.selectContacts()
-  //     const newContacts = contacts.map(contact => ({
-  //       ethAddress: contact.data.profile.ethAddress,
-  //       name: contact.data.profile.name,
-  //     }))
-  //     setContacts(newContacts)
-  //   }
-  //   initializeContacts()
-  // }, [sdk])
-
-  const [ownAccount, setOwnAccount] = useState([])
+  const [ownAccount, setOwnAccount] = useState()
   useEffect(() => {
     const initializeOwnAccount = async () => {
       const ownAccount = await sdk.ethereum.getDefaultAccount()
@@ -54,8 +40,19 @@ export default function Dashboard() {
     initializeOwnAccount()
   }, [sdk])
 
+  const [loans, setLoans] = useState([])
+  // useEffect(() => {
+  //   if (!contract || !ownAccount) return
+  //   console.log('contract', contract)
+  //   console.log('ownAccount', ownAccount)
+  //   const fetchForLoans = async () => {
+  //     const newLoans = await contract.methods.getLoanAtAddress(ownAccount).call()
+  //     setLoans(Object.entries(newLoans))
+  //   }
+  //   fetchForLoans()
+  // }, [contract])
+
   async function selectContactFromMainframe() {
-    console.log('oi')
     const contact = await sdk.contacts.selectContact()
     if (contact) {
       const { ethAddress } = contact.data.profile
