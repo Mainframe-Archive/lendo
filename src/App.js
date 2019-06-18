@@ -1,8 +1,10 @@
 // @flow
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+
 import { createGlobalStyle } from 'styled-components'
 
+import MainframeContext, { sdk, web3 } from './contexts/Mainframe'
 import Sidebar from './ui/Sidebar'
 
 import Dashboard from './pages/Dashboard'
@@ -15,7 +17,7 @@ const GlobalStyles = createGlobalStyle`
   html {
     font-size: ${defaultFontSize};
   }
-  
+
   body {
     background-color: white;
     margin: 0;
@@ -24,29 +26,30 @@ const GlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
   * {
     box-sizing: border-box;
   }
-  
+
   #root {
     display: flex;
     height: 100vh;
   }
 `
-
 export default function App() {
   return (
-    <Router>
-      <GlobalStyles />
-      <Sidebar />
-      <Switch>
-        <Route exact path="/" component={Dashboard} />
-        <Route path="/loaned" component={Loaned} />
-        <Route path="/borrowed" component={Borrowed} />
-        <Route path="/loaned" component={Loaned} />
-        <Route path="/requests" component={Requests} />
-      </Switch>
-    </Router>
+    <MainframeContext.Provider value={{ sdk, web3 }}>
+      <Router>
+        <GlobalStyles />
+        <Sidebar />
+        <Switch>
+          <Route exact path="/" component={Dashboard} />
+          <Route path="/loaned" component={Loaned} />
+          <Route path="/borrowed" component={Borrowed} />
+          <Route path="/loaned" component={Loaned} />
+          <Route path="/requests" component={Requests} />
+        </Switch>
+      </Router>
+    </MainframeContext.Provider>
   )
 }
