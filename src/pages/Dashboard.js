@@ -45,10 +45,14 @@ export default function Dashboard() {
     if (!contract || !ownAccount) return
     console.log('contract', contract)
     console.log('ownAccount', ownAccount)
+
     const fetchForLoans = async () => {
       const newLoans = await contract.methods
         .getLoanAtAddress(ownAccount)
         .call()
+
+      //const editedNewLoans = typeof newLoans === 'func a' : Object.entries(newLoans)
+      //  $FlowFixMe
       setLoans(Object.entries(newLoans))
     }
     fetchForLoans()
