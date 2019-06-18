@@ -25,6 +25,9 @@ contract Loan is Initializable {
     // Amount in DAI
     uint256 amount;
 
+    // Due date for loan payment (in UNIX time seconds)
+    uint256 dueDate;
+
     // Status
     LoanStatuses status;
   }
@@ -63,23 +66,24 @@ contract Loan is Initializable {
   event LoanRequested (
     address borrower,
     address lender,
-    string name
+    string name,
+    uint256 dueDate
   );
 
   // Called by the borrower who wants to request money from a known lender
   //
   // Returns how many loans this borrower has already requested; the loan data
   // can be read by calling loansByBorrower[index] with this returned value.
-  function requestLoan(address lender, string memory name, uint256 amount) public returns (uint256) {
+  function requestLoan(address lender, string memory name, uint256 amount, uint256 dueDate) public returns (uint256) {
     require(lender != msg.sender, "You can't borrow money from yourself");
 
-    LoanData memory loan = LoanData(lender, msg.sender, name, amount, LoanStatuses.Requested);
+    LoanData memory loan = LoanData(lender, msg.sender, name, amount, dueDate, LoanStatuses.Requested);
     totalLoanCount = loans.push(loan);
     uint256 loanIdx = totalLoanCount - 1;
     loansByLender[lender].push(loanIdx);
     uint256 loanCount = loansByBorrower[msg.sender].push(loanIdx);
 
-    emit LoanRequested(msg.sender, lender, name);
+    emit LoanRequested(msg.sender, lender, name, dueDate);
     return loanCount;
   }
 
