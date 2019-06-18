@@ -41,16 +41,18 @@ export default function Dashboard() {
   }, [sdk])
 
   const [loans, setLoans] = useState([])
-  // useEffect(() => {
-  //   if (!contract || !ownAccount) return
-  //   console.log('contract', contract)
-  //   console.log('ownAccount', ownAccount)
-  //   const fetchForLoans = async () => {
-  //     const newLoans = await contract.methods.getLoanAtAddress(ownAccount).call()
-  //     setLoans(Object.entries(newLoans))
-  //   }
-  //   fetchForLoans()
-  // }, [contract])
+  useEffect(() => {
+    if (!contract || !ownAccount) return
+    console.log('contract', contract)
+    console.log('ownAccount', ownAccount)
+    const fetchForLoans = async () => {
+      const newLoans = await contract.methods
+        .getLoanAtAddress(ownAccount)
+        .call()
+      setLoans(Object.entries(newLoans))
+    }
+    fetchForLoans()
+  }, [contract])
 
   async function selectContactFromMainframe() {
     const contact = await sdk.contacts.selectContact()
@@ -94,9 +96,7 @@ export default function Dashboard() {
           <div className="form-container">
             <div className="row-item">
               <div>Lender</div>
-              <button
-                type='button'
-                onClick={selectContactFromMainframe}>
+              <button type="button" onClick={selectContactFromMainframe}>
                 Select your Friend
               </button>
               <div>{selectedContact}</div>
