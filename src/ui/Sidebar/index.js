@@ -15,12 +15,12 @@ const SidebarContainer = styled.aside`
   nav {
     font-size: 1.3rem;
   }
-  
+
   ul {
     padding-left: 20px;
     list-style: url(${triangle});
   }
-  
+
   li {
     margin-bottom: 15px;
   }
@@ -28,14 +28,14 @@ const SidebarContainer = styled.aside`
   a {
     color: ${defaultTextColor};
     text-decoration: none;
-    
+
     &.active {
       font-weight: bold;
     }
   }
 `
 
-export default function Sidebar() {
+export default function Sidebar () {
   return (
     <SidebarContainer>
       Pages

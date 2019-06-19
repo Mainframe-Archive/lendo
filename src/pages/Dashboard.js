@@ -13,7 +13,7 @@ import { abi, contractAddress } from '../abi'
 //   background-color: #262626;
 // `
 
-export default function Dashboard() {
+export default function Dashboard () {
   const { sdk, web3 } = useContext(MainframeContext)
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
@@ -43,34 +43,33 @@ export default function Dashboard() {
   const [loans, setLoans] = useState([])
   useEffect(() => {
     if (!contract || !ownAccount) return
-    console.log('contract', contract)
-    console.log('ownAccount', ownAccount)
 
     const fetchForLoans = async () => {
       const newLoans = await contract.methods
         .getLoanAtAddress(ownAccount)
         .call()
 
-      //const editedNewLoans = typeof newLoans === 'func a' : Object.entries(newLoans)
+      // const editedNewLoans = typeof newLoans === 'func a' : Object.entries(newLoans)
       //  $FlowFixMe
       setLoans(Object.entries(newLoans))
     }
     fetchForLoans()
   }, [contract])
 
-  async function selectContactFromMainframe() {
+  async function selectContactFromMainframe () {
     const contact = await sdk.contacts.selectContact()
     if (contact) {
       const { ethAddress } = contact.data.profile
       if (!ethAddress) {
-        console.log('The selected contact does not have a public ETH address')
+        //error msg
+        // console.log('The selected contact does not have a public ETH address')
       } else {
         setSelectedContact(ethAddress)
       }
     }
   }
 
-  async function createNewLoanContract(event) {
+  async function createNewLoanContract (event) {
     event.preventDefault()
     setLoadingStatus(true)
     if (contract) {
@@ -78,9 +77,14 @@ export default function Dashboard() {
         .requestLoanRob(selectedContact, loanAmount)
         .send({ from: ownAccount })
 
-      setShowMsg(true)
-      setShowNewLoan(false)
-      setLoadingStatus(false)
+      if (writeLoan) {
+        setShowMsg(true)
+        setShowNewLoan(false)
+        setLoadingStatus(false)
+      } else {
+        // error msg
+      }
+
 
       setTimeout(() => {
         setShowMsg(false)
@@ -149,7 +153,7 @@ export default function Dashboard() {
   )
 }
 
-function calcDebt(amount) {
+function calcDebt (amount) {
   const interest = 0.0127
   const newAmount = amount * (1 + interest)
   return newAmount

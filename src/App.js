@@ -36,7 +36,7 @@ const GlobalStyles = createGlobalStyle`
     height: 100vh;
   }
 `
-export default function App() {
+export default function App () {
   return (
     <MainframeContext.Provider value={{ sdk, web3 }}>
       <Router>
