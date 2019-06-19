@@ -35,6 +35,22 @@ contract('Loan', function(accounts) {
     lenderBalance.should.be.equal(expectedLenderBalance)
   }
 
+  async function verifyLoanCountShouldBe(
+    loanContract,
+    expectedBorrowerLoanCount,
+    expectedLenderLoanCount,
+  ) {
+    const borrowerLoanCount = await loanContract.methods
+      .loanCountByBorrower(borrowerAddress)
+      .call()
+    borrowerLoanCount.should.be.equal(expectedBorrowerLoanCount)
+
+    const lenderLoanCount = await loanContract.methods
+      .loanCountByLender(lenderAddress)
+      .call()
+    lenderLoanCount.should.be.equal(expectedLenderLoanCount)
+  }
+
   beforeEach(async function() {
     this.project = await TestHelper()
 
@@ -45,8 +61,8 @@ contract('Loan', function(accounts) {
         18,
         (100e18).toString(),
         lenderAddress,
-        [lenderAddress],
-        [lenderAddress],
+        [],
+        [],
       ],
     })
 
@@ -74,6 +90,7 @@ contract('Loan', function(accounts) {
 
   it('should allow the lender to approve the loan', async function() {
     await balancesShouldBe(this.daiMockProxy, '0', (100e18).toString())
+    await verifyLoanCountShouldBe(this.loanProxy, '0', '0')
 
     // Check allowance pre-condition
     const proxyAddress = this.loanProxy.options.address
@@ -110,5 +127,27 @@ contract('Loan', function(accounts) {
 
     // Balances should still be the same because only the request happened
     await balancesShouldBe(this.daiMockProxy, '0', (100e18).toString())
+
+    // Verify saved loan mapping associations
+    await verifyLoanCountShouldBe(this.loanProxy, '1', '1')
+
+    const loanIdx = await this.loanProxy.methods
+      .loansByBorrower(borrowerAddress, 0)
+      .call()
+    loanIdx.should.be.equal('0')
+
+    // Verify saved loan data on blockchain
+    const totalLoanCount = await this.loanProxy.methods.totalLoanCount().call()
+    totalLoanCount.should.be.equal('1')
+
+    const loan = await this.loanProxy.methods.loans(loanIdx).call()
+    loan.lender.should.be.equal(lender)
+    loan.borrower.should.be.equal(borrower)
+    loan.name.should.be.equal('This is a test loan request')
+    loan.amount.should.be.equal((10e18).toString())
+    loan.dueDate.should.be.equal(
+      (new Date('2050-01-01T00:00:00Z').getTime() / 1000).toString(),
+    )
+    loan.status.should.be.equal('0')
   })
 })
