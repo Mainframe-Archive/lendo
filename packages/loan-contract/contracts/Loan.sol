@@ -56,12 +56,20 @@ contract Loan is Initializable {
   // to elements from the loans array.
   mapping (address => uint256[]) public loansByLender;
 
+  function loanCountByLender(address lender) public view returns (uint256) {
+    return loansByLender[lender].length;
+  }
+
   // Addresses the loan data mapped by the borrower address; One borrower
   // can borrow money from many lenders.
   //
   // The key is the borrower address, the value is an array of numeric indexes
   // to elements from the loans array.
   mapping (address => uint256[]) public loansByBorrower;
+
+  function loanCountByBorrower(address borrower) public view returns (uint256) {
+    return loansByBorrower[borrower].length;
+  }
 
   event LoanRequested (
     address borrower,
