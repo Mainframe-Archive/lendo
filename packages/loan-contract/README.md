@@ -1,24 +1,24 @@
-# Wallet Setup
+# Contract setup
 
-## TDLR;
+## Overview 
+
+This project uses ZeppelinOS for managing contract deployment/upgrading. Since DAI has only support for Kovan Testnet, we always use the `kovan` network configuration on `truffle-config.js`.
+
+For local testing we use `ganache` or `ganache-cli` with a dummy ERC20 contract pretending to be a DAI instance. For our smart contract it doesn't matter because internally it just accepts an ETH address at initialization time and treats it as the base ERC20 contract address.
+
+> The following instructions are working as of June/2019.
+
+## Testing on Kovan testnet
 
 Assuming you are using a web3-enabled browser:
 
 1. Get some Kovan ETH by writting your ETH address as a message at https://gitter.im/kovan-testnet/faucet
 
-2. You can confirm that you received your testnet DAI at etherscan: https://kovan.etherscan.io/token/0xc4375b7de8af5a38a93548eb8453a498222c4ff2
+2. Exchange test ETH for test DAI at: https://eth2dai.com/instant
 
-3. Exchange ETH for DAI at: https://eth2dai.com/instant
+3. You can confirm that you received your testnet DAI at etherscan: https://kovan.etherscan.io/token/0xc4375b7de8af5a38a93548eb8453a498222c4ff2
 
-The tests assume you are using a HD wallet with at least 2 addresses, where address[0] will assume a borrower role and address[1] will assume a lender role inside the tests.
-
-Address[0] must have some ETH, enough to pay for the gas. Address[1] also must have some ETH, and must have some DAI to give to the borrower.
-
-## Smart contract deployment
-
-This project uses ZeppelinOS for managing contract deployment/upgrading. Since DAI has only support for Kovan Testnet, we always use the `kovan` network configuration on `truffle-config.js`.
-
-### Contract upgrade
+For contract deployment from scratch:
 
 1. Make sure you have your seed words for `kovan` wallet exported as an environment variable called `MNEMONIC`; it is used by `truffle-config.js` to execute operations on the blockchain.
 
@@ -38,22 +38,16 @@ $ npx zos session --network kovan
 $ npx zos push
 ```
 
-4. Update the proxy contract with the new logic contract address:
+4. Create the proxy contract pointing to the logic contract address:
 
 ```shell
-$ npx zos update --network kovan
+$ npx zos create Loan --init initialize --args "0xc4375b7de8af5a38a93548eb8453a498222c4ff2"
 ```
 
-## Overview
+The initialization parameter refers to the DAI contract address on Kovan testnet.
 
-DAI is available only on Kovan testnet, so we need to first get some testnet ETH and then convert it to testnet DAI.
+If you are just upgrading the existing contract with a new logic contract:
 
-The following instructions are working as of June/2019.
-
-### Get some Kovan ETH
-
-See: https://medium.com/singapore-blockchain-dapps/how-to-get-testcoin-from-ethereum-kovan-testnetwork-85c466d5b869
-
-### Get some Kovan DAI
-
-See: https://kauri.io/article/9ef53381beb14100a2af9817e22bd812/dai-token-guide-for-developers
+```shell
+$ npx zos update Loan
+```
