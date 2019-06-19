@@ -1,9 +1,9 @@
 // @flow
 import React, { useState, useContext, useEffect } from 'react'
 // import styled from 'styled-components'
-import MainframeContext from '../contexts/Mainframe'
+import { sdk, web3, contract } from 'services/Mainframe'
 
-import { abi, contractAddress } from '../abi'
+import { abi, contractAddress } from 'abi'
 
 // const Container = styled.View`
 //   flex: 1;
@@ -14,7 +14,6 @@ import { abi, contractAddress } from '../abi'
 // `
 
 export default function Dashboard() {
-  const { sdk, web3 } = useContext(MainframeContext)
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
   const [loanAmount, setLoanAmount] = useState(0)

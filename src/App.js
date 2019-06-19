@@ -1,17 +1,18 @@
 // @flow
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 import { createGlobalStyle } from 'styled-components'
+import Sidebar from 'ui/Sidebar'
 
-import MainframeContext, { sdk, web3 } from './contexts/Mainframe'
-import Sidebar from './ui/Sidebar'
+import {
+  Dashboard,
+  Loaned,
+  Borrowed,
+  Requests,
+  NewLoan,
+} from 'pages'
 
-import Dashboard from './pages/Dashboard'
-import Loaned from './pages/Loaned'
-import Borrowed from './pages/Borrowed'
-import Requests from './pages/Requests'
-import { defaultFontFamily, defaultFontSize, defaultTextColor } from './theme'
+import { defaultFontFamily, defaultFontSize, defaultTextColor } from 'theme'
 
 const GlobalStyles = createGlobalStyle`
   html {
@@ -38,18 +39,21 @@ const GlobalStyles = createGlobalStyle`
 `
 export default function App() {
   return (
-    <MainframeContext.Provider value={{ sdk, web3 }}>
-      <Router>
-        <GlobalStyles />
-        <Sidebar />
-        <Switch>
-          <Route exact path="/" component={Dashboard} />
-          <Route path="/loaned" component={Loaned} />
-          <Route path="/borrowed" component={Borrowed} />
-          <Route path="/loaned" component={Loaned} />
-          <Route path="/requests" component={Requests} />
-        </Switch>
-      </Router>
-    </MainframeContext.Provider>
+    <Router>
+      <GlobalStyles />
+      <Switch>
+        <Route exact path="/new-loan" component={NewLoan} />
+        <Route>
+          <Sidebar />
+          <Switch>
+            <Route exact path="/" component={Dashboard} />
+            <Route path="/loaned" component={Loaned} />
+            <Route path="/borrowed" component={Borrowed} />
+            <Route path="/requests" component={Requests} />
+            <Redirect to="/" />
+          </Switch>
+        </Route>
+      </Switch>
+    </Router>
   )
 }

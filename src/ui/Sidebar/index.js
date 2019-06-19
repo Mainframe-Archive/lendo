@@ -2,7 +2,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
-import { defaultTextColor } from '../../theme'
+import { defaultTextColor } from 'theme'
 import triangle from './triangle.svg'
 
 const SidebarContainer = styled.aside`
