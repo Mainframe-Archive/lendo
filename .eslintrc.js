@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['mainframe', 'mainframe/jest', 'mainframe/react-native-web'],
+  extends: ['standard', "eslint:recommended", 'plugin:react/recommended'],
   settings: {
     react: {
       version: '16.8.6',

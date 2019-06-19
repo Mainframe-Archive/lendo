@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 
-export default function Loaned() {
+export default function Loaned () {
   return (
     <div>
       <h1>Sample Page</h1>

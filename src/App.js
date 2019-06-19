@@ -37,7 +37,7 @@ const GlobalStyles = createGlobalStyle`
     height: 100vh;
   }
 `
-export default function App() {
+export default function App () {
   return (
     <Router>
       <GlobalStyles />
