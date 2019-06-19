@@ -1,27 +1,32 @@
 pragma solidity ^0.5.0;
 
 import "zos-lib/contracts/Initializable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-eth/contracts/token/ERC20/IERC20.sol";
 
 contract Loan is Initializable {
 
-  function initialize() public initializer {
+  function initialize(address _erc20Address) public initializer {
+    erc20Address = _erc20Address;
   }
 
-  address constant KOVAN_DAI_CONTRACT_ADDRESS = 0xC4375B7De8af5a38a93548eb8453a498222C4fF2;
+  // Stores the token asset ERC20 contract address
+  address public erc20Address;
 
-  // TODO: move all possible data to swarm encrypted storage
   struct LoanData {
-    string swarmHash;
-
     // Lender eth address
     address lender;
 
     // Borrower eth address
     address borrower;
 
+    // Loan descriptive name
+    string name;
+
     // Amount in DAI
     uint256 amount;
+
+    // Due date for loan payment (in UNIX time seconds)
+    uint256 dueDate;
 
     // Status
     LoanStatuses status;
@@ -40,9 +45,9 @@ contract Loan is Initializable {
   }
 
   // Contains all created loans
-  LoanData[] loans;
+  LoanData[] public loans;
 
-  uint256 totalLoanCount;
+  uint256 public totalLoanCount;
 
   // Addresses the loan data mapped by the lender address; One lender
   // can give money to many borrowers.
@@ -60,23 +65,25 @@ contract Loan is Initializable {
 
   event LoanRequested (
     address borrower,
-    address lender
+    address lender,
+    string name,
+    uint256 dueDate
   );
 
   // Called by the borrower who wants to request money from a known lender
   //
   // Returns how many loans this borrower has already requested; the loan data
   // can be read by calling loansByBorrower[index] with this returned value.
-  function requestLoan(address lender, uint256 amount) public returns (uint256) {
+  function requestLoan(address lender, string memory name, uint256 amount, uint256 dueDate) public returns (uint256) {
     require(lender != msg.sender, "You can't borrow money from yourself");
 
-    LoanData memory loan = LoanData("", lender, msg.sender, amount, LoanStatuses.Requested);
+    LoanData memory loan = LoanData(lender, msg.sender, name, amount, dueDate, LoanStatuses.Requested);
     totalLoanCount = loans.push(loan);
     uint256 loanIdx = totalLoanCount - 1;
     loansByLender[lender].push(loanIdx);
     uint256 loanCount = loansByBorrower[msg.sender].push(loanIdx);
 
-    emit LoanRequested(msg.sender, lender);
+    emit LoanRequested(msg.sender, lender, name, dueDate);
     return loanCount;
   }
 
@@ -88,7 +95,7 @@ contract Loan is Initializable {
 
     // Check if the lender has previously approved this contract to spend
     // the necessary amount of tokens
-    IERC20 dai = IERC20(KOVAN_DAI_CONTRACT_ADDRESS);
+    IERC20 dai = IERC20(erc20Address);
     require(dai.allowance(msg.sender, address(this)) >= loan.amount, "Cannot spend required amount of DAI on behalf of caller");
 
     require(dai.transferFrom(msg.sender, loan.borrower, loan.amount), "Could not transfer tokens to the borrower");
@@ -101,7 +108,7 @@ contract Loan is Initializable {
     LoanData storage loan = loans[globalIndex];
     require(loan.status == LoanStatuses.Approved, "Loan must be in Approved status");
 
-    IERC20 dai = IERC20(KOVAN_DAI_CONTRACT_ADDRESS);
+    IERC20 dai = IERC20(erc20Address);
     require(dai.allowance(msg.sender, address(this)) >= loan.amount, "Cannot spend required amount of DAI on behalf of caller");
 
     require(dai.transferFrom(msg.sender, loan.lender, loan.amount), "Could not transfer tokens to the lender");

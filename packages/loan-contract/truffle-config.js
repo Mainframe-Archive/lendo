@@ -5,7 +5,7 @@ module.exports = {
   networks: {
     local: {
       host: 'localhost',
-      port: 9545,
+      port: 8545,
       gas: 5000000,
       gasPrice: 5e9,
       network_id: '*',
@@ -15,17 +15,8 @@ module.exports = {
         return new HDWalletProvider(
           mnemonic,
           'https://kovan.infura.io/v3/8ec0911ee74c4583b1346bbc1afdf22d',
-        )
-      },
-      network_id: 42,
-    },
-    test: {
-      provider: function() {
-        return new HDWalletProvider(
-          mnemonic,
-          'https://kovan.infura.io/v3/8ec0911ee74c4583b1346bbc1afdf22d',
           0,
-          3,
+          2,
         )
       },
       network_id: 42,
