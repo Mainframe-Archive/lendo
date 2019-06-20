@@ -13,8 +13,7 @@ import { abi, contractAddress } from 'abi'
 //   background-color: #262626;
 // `
 
-export default function Dashboard () {
-
+export default function Dashboard() {
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
   const [loanAmount, setLoanAmount] = useState(0)
@@ -56,7 +55,7 @@ export default function Dashboard () {
     fetchForLoans()
   }, [contract, ownAccount])
 
-  async function selectContactFromMainframe () {
+  async function selectContactFromMainframe() {
     const contact = await sdk.contacts.selectContact()
     if (contact) {
       const { ethAddress } = contact.data.profile
@@ -69,7 +68,7 @@ export default function Dashboard () {
     }
   }
 
-  async function createNewLoanContract (event) {
+  async function createNewLoanContract(event) {
     event.preventDefault()
     setLoadingStatus(true)
     if (contract) {
@@ -84,7 +83,6 @@ export default function Dashboard () {
       } else {
         // error msg
       }
-
 
       setTimeout(() => {
         setShowMsg(false)
@@ -153,7 +151,7 @@ export default function Dashboard () {
   )
 }
 
-function calcDebt (amount) {
+function calcDebt(amount) {
   const interest = 0.0127
   const newAmount = amount * (1 + interest)
   return newAmount
