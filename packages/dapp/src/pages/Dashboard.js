@@ -1,16 +1,9 @@
 // @flow
 import React, { useState, useEffect } from 'react'
-// import styled from 'styled-components'
+import styled from 'styled-components'
 import { sdk, web3, contract } from 'services/Mainframe'
 import { useBorrowerLoans } from 'services/Loans'
-
-// const Container = styled.View`
-//   flex: 1;
-//   flex-direction: row;
-//   width: 300px;
-//   height: 300px;
-//   background-color: #262626;
-// `
+import LoansTable from 'ui/LoansTable'
 
 export default function Dashboard () {
   const [showNewLoan, setShowNewLoan] = useState(false)
@@ -73,12 +66,7 @@ export default function Dashboard () {
     <div className="App">
       <h1>{showMsg ? 'Loan created successfully!' : ''}</h1>
       <h1>My Loans</h1>
-      {loans.map((loan, key) => (
-        <>
-        <div key={key}>{loan.name}</div>
-        <div>{loan.lender}</div>
-        </>
-      ))}
+      {LoansTable(loans)}
       {showNewLoan ? (
         <form style={{ justifyContent: 'center' }}>
           <div className="form-container">
