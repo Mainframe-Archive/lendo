@@ -1,17 +1,10 @@
 // @flow
 import React, { useState, useEffect } from 'react'
+import Layout from 'ui/Layouts/default'
 // import styled from 'styled-components'
 import { sdk, web3 } from 'services/Mainframe'
 
 import { abi, contractAddress } from 'abi'
-
-// const Container = styled.View`
-//   flex: 1;
-//   flex-direction: row;
-//   width: 300px;
-//   height: 300px;
-//   background-color: #262626;
-// `
 
 export default function Dashboard () {
 
@@ -94,7 +87,7 @@ export default function Dashboard () {
 
   if (loadingStatus) return <div>Loading...</div>
   return (
-    <div className="App">
+    <Layout title="Dashboard">
       <h1>{showMsg ? 'Loan created successfully!' : ''}</h1>
       <h1>My Loans</h1>
       {loans.map((loan, key) => (
@@ -149,7 +142,7 @@ export default function Dashboard () {
           New Loan{' '}
         </button>
       )}
-    </div>
+    </Layout>
   )
 }
 

@@ -1,10 +1,12 @@
 // @flow
 import React from 'react'
+import Button from 'ui/Button'
+import Layout from 'ui/Layouts/default'
 
- export default function NewLoan() {
+export default function NewLoan () {
   return (
-    <div>
-      <h1>New Loan</h1>
-    </div>
+    <Layout title="New loan">
+      <Button>Next</Button>
+    </Layout>
   )
 }
