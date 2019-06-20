@@ -9,7 +9,7 @@ const PayRow = styled.td`
   color: blue;
   cursor: pointer;
 `
-export default function LoansTable(loans) {
+export default function LoansTable({loans}) {
   return (
     <TableContainer>
       <table>

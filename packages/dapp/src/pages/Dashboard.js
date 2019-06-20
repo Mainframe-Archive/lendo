@@ -5,11 +5,8 @@ import { sdk, web3, contract } from 'services/Mainframe'
 import { useBorrowerLoans } from 'services/Loans'
 import LoansTable from 'ui/LoansTable'
 
-<<<<<<< HEAD
-export default function Dashboard () {
-=======
+
 export default function Dashboard() {
->>>>>>> develop
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
   const [loanAmount, setLoanAmount] = useState(0)
@@ -70,7 +67,7 @@ export default function Dashboard() {
     <div className="App">
       <h1>{showMsg ? 'Loan created successfully!' : ''}</h1>
       <h1>My Loans</h1>
-      {LoansTable(loans)}
+      <LoansTable loans={loans}/>
       {showNewLoan ? (
         <form style={{ justifyContent: 'center' }}>
           <div className="form-container">
