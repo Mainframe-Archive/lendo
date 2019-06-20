@@ -19,6 +19,6 @@
   },
   "workspaces": {
     "packages": ["packages/*"],
-    "nohoist": ["**/loan-contract/**"]
+    "nohoist": ["**/**"]
   }
 }
