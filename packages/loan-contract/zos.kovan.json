@@ -1,11 +1,11 @@
 {
   "contracts": {
     "Loan": {
-      "address": "0xaCAC92C30945b8fc47D341662C60b436c40B1AD4",
-      "constructorCode": "608060405234801561001057600080fd5b5061112e806100206000396000f3fe",
-      "bodyBytecodeHash": "5cf0fc7d405286be8fa7b55af9439292298cf1339a2b95b1428fd5008edc16d3",
-      "localBytecodeHash": "6ad72ef8e71cbaa4b4b036a68d6e2dea58f0388f6ba82e2471cc8de601cc69f1",
-      "deployedBytecodeHash": "6ad72ef8e71cbaa4b4b036a68d6e2dea58f0388f6ba82e2471cc8de601cc69f1",
+      "address": "0x55e78126AcF5aa44a3CDbECaF2cA881179C81bFd",
+      "constructorCode": "608060405234801561001057600080fd5b50611767806100206000396000f3fe",
+      "bodyBytecodeHash": "500b6fef3a4bea2e928d36f176af77fe9645152006cbfcc895ddc06ef52b1672",
+      "localBytecodeHash": "95ed0fe2b587822cd1f61875fa4387eb075c462f6c051aed68a5cbaac9270620",
+      "deployedBytecodeHash": "95ed0fe2b587822cd1f61875fa4387eb075c462f6c051aed68a5cbaac9270620",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -24,40 +24,51 @@
           "kind": "array",
           "label": "uint256[50]"
         },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
         "t_struct<Loan.LoanData>": {
           "id": "t_struct<Loan.LoanData>",
           "kind": "struct",
           "label": "Loan.LoanData",
           "members": [
             {
-              "label": "swarmHash",
-              "astId": 16,
-              "type": "t_string",
-              "src": "399:16:0"
-            },
-            {
               "label": "lender",
-              "astId": 18,
+              "astId": 21,
               "type": "t_address",
-              "src": "448:14:0"
+              "src": "404:14:0"
             },
             {
               "label": "borrower",
-              "astId": 20,
+              "astId": 23,
               "type": "t_address",
-              "src": "497:16:0"
+              "src": "453:16:0"
+            },
+            {
+              "label": "name",
+              "astId": 25,
+              "type": "t_string",
+              "src": "505:11:0"
             },
             {
               "label": "amount",
-              "astId": 22,
+              "astId": 27,
               "type": "t_uint256",
-              "src": "541:14:0"
+              "src": "544:14:0"
+            },
+            {
+              "label": "dueDate",
+              "astId": 29,
+              "type": "t_uint256",
+              "src": "621:15:0"
             },
             {
               "label": "status",
-              "astId": 24,
+              "astId": 31,
               "type": "t_enum<Loan.LoanStatuses>",
-              "src": "576:19:0"
+              "src": "657:19:0"
             }
           ]
         },
@@ -65,11 +76,6 @@
           "id": "t_string",
           "kind": "elementary",
           "label": "string"
-        },
-        "t_address": {
-          "id": "t_address",
-          "kind": "elementary",
-          "label": "address"
         },
         "t_enum<Loan.LoanStatuses>": {
           "id": "t_enum<Loan.LoanStatuses>",
@@ -107,7 +113,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 334,
+          "astId": 378,
           "type": "t_bool",
           "src": "757:24:2"
         },
@@ -115,7 +121,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 336,
+          "astId": 380,
           "type": "t_bool",
           "src": "876:25:2"
         },
@@ -123,41 +129,49 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 392,
+          "astId": 436,
           "type": "t_array:50<t_uint256>",
           "src": "1951:29:2"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
+          "label": "erc20Address",
+          "astId": 19,
+          "type": "t_address",
+          "src": "324:27:0"
+        },
+        {
+          "contract": "Loan",
+          "path": "contracts/Loan.sol",
           "label": "loans",
-          "astId": 32,
+          "astId": 39,
           "type": "t_array:dyn<t_struct<Loan.LoanData>>",
-          "src": "813:16:0"
+          "src": "894:23:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "totalLoanCount",
-          "astId": 34,
+          "astId": 41,
           "type": "t_uint256",
-          "src": "834:22:0"
+          "src": "922:29:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "loansByLender",
-          "astId": 39,
+          "astId": 46,
           "type": "t_mapping<t_array:dyn<t_uint256>>",
-          "src": "1091:51:0"
+          "src": "1186:51:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "loansByBorrower",
-          "astId": 44,
+          "astId": 64,
           "type": "t_mapping<t_array:dyn<t_uint256>>",
-          "src": "1385:53:0"
+          "src": "1603:53:0"
         }
       ],
       "warnings": {
@@ -173,15 +187,21 @@
   "proxies": {
     "loan-contract/Loan": [
       {
-        "address": "0xCc4Bf0dc70711CBF3db29793Fa4D2d377808BC14",
+        "address": "0xb0a17D694D56A3E355c735EF4CBA3f360973AFdc",
         "version": "0.1.0",
-        "implementation": "0xaCAC92C30945b8fc47D341662C60b436c40B1AD4"
+        "implementation": "0x55e78126AcF5aa44a3CDbECaF2cA881179C81bFd"
       }
     ]
   },
   "zosversion": "2.2",
   "version": "0.1.0",
+  "dependencies": {
+    "openzeppelin-eth": {
+      "package": "0xb6f8f11b166d526932ee04ffe4d25b810f619e34",
+      "version": "2.2.0"
+    }
+  },
   "proxyAdmin": {
-    "address": "0x4420a1C6dDD6F1afb0671E8A29D7FfdE4eFa2192"
+    "address": "0x3DAFAA2Cd4C35F54750D57a18a0163e2165Bf794"
   }
 }
