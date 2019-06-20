@@ -1,9 +1,11 @@
 {
   "name": "loan-contract",
   "version": "0.1.0",
+  "private": true,
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "truffle build",
     "test": "truffle test"
   },
   "author": "Willian Mitsuda <willian@mainframe.com>",

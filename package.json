@@ -1,0 +1,24 @@
+{
+  "name": "lendo",
+  "description": "Blockchain based social lending",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MainframeHQ/social-lending-dapp.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MainframeHQ/social-lending-dapp/issues"
+  },
+  "homepage": "https://github.com/MainframeHQ/social-lending-dapp#readme",
+  "devDependencies": {
+    "lerna": "^3.15.0"
+  },
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": ["**/loan-contract/**"]
+  }
+}
