@@ -1,65 +1,65 @@
-export const contractAddress = '0x9D6427182e601Ba96eECcc28872aa93f90C58762'
+export const contractAddress = '0xb0a17D694D56A3E355c735EF4CBA3f360973AFdc'
 
 export const abi = [
+  {
+    constant: true,
+    inputs: [],
+    name: 'erc20Address',
+    outputs: [
+      {
+        name: '',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
   {
     constant: true,
     inputs: [
       {
         name: '',
-        type: 'address'
+        type: 'address',
       },
       {
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'loansByBorrower',
     outputs: [
       {
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
     inputs: [
       {
         name: '',
-        type: 'address'
+        type: 'address',
       },
       {
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'loansByLender',
     outputs: [
       {
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'LoanStatus',
-    outputs: [
-      {
-        name: '',
-        type: 'string'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -68,82 +68,51 @@ export const abi = [
     outputs: [
       {
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
     inputs: [
       {
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'loans',
     outputs: [
       {
-        name: 'swarmHash',
-        type: 'string'
-      },
-      {
         name: 'lender',
-        type: 'address'
+        type: 'address',
       },
       {
         name: 'borrower',
-        type: 'address'
+        type: 'address',
+      },
+      {
+        name: 'name',
+        type: 'string',
       },
       {
         name: 'amount',
-        type: 'uint256'
+        type: 'uint256',
+      },
+      {
+        name: 'dueDate',
+        type: 'uint256',
       },
       {
         name: 'status',
-        type: 'uint8'
-      }
+        type: 'uint8',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '',
-        type: 'address'
-      }
-    ],
-    name: 'loansByBorrowerRob',
-    outputs: [
-      {
-        name: 'swarmHash',
-        type: 'string'
-      },
-      {
-        name: 'lender',
-        type: 'address'
-      },
-      {
-        name: 'borrower',
-        type: 'address'
-      },
-      {
-        name: 'amount',
-        type: 'uint256'
-      },
-      {
-        name: 'status',
-        type: 'uint8'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     anonymous: false,
@@ -151,133 +120,136 @@ export const abi = [
       {
         indexed: false,
         name: 'borrower',
-        type: 'address'
+        type: 'address',
       },
       {
         indexed: false,
         name: 'lender',
-        type: 'address'
-      }
+        type: 'address',
+      },
+      {
+        indexed: false,
+        name: 'name',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        name: 'dueDate',
+        type: 'uint256',
+      },
     ],
     name: 'LoanRequested',
-    type: 'event'
+    type: 'event',
   },
   {
     constant: false,
-    inputs: [],
+    inputs: [
+      {
+        name: '_erc20Address',
+        type: 'address',
+      },
+    ],
     name: 'initialize',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
     inputs: [
       {
-        name: 'borrowerAddress',
-        type: 'address'
-      }
+        name: 'lender',
+        type: 'address',
+      },
     ],
-    name: 'getLoanAtAddress',
+    name: 'loanCountByLender',
     outputs: [
       {
         name: '',
-        type: 'address'
+        type: 'uint256',
       },
-      {
-        name: '',
-        type: 'address'
-      },
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'string'
-      },
-      {
-        name: 'armor',
-        type: 'uint8'
-      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: 'borrower',
+        type: 'address',
+      },
+    ],
+    name: 'loanCountByBorrower',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
         name: 'lender',
-        type: 'address'
+        type: 'address',
+      },
+      {
+        name: 'name',
+        type: 'string',
       },
       {
         name: 'amount',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
+      {
+        name: 'dueDate',
+        type: 'uint256',
+      },
     ],
     name: 'requestLoan',
     outputs: [
       {
         name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'lender',
-        type: 'address'
+        type: 'uint256',
       },
-      {
-        name: 'amount',
-        type: 'uint256'
-      }
-    ],
-    name: 'requestLoanRob',
-    outputs: [
-      {
-        name: '',
-        type: 'string'
-      }
     ],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
         name: 'index',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'approveLoan',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
         name: 'index',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'payDebt',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
-  }
+    type: 'function',
+  },
 ]
