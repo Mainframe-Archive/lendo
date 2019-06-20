@@ -3,7 +3,7 @@
   "description": "Blockchain based social lending",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "lerna run test"
   },
   "repository": {
     "type": "git",
