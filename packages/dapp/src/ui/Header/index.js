@@ -17,6 +17,12 @@ const HeaderContainer = styled.header`
   .actions {
     float: right;
   }
+  
+  &::after {
+    display: block;
+    clear: both;
+    content: "";
+  }
 `
 
 export default function Header ({children, title}: Props) {
