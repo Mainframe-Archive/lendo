@@ -9,7 +9,9 @@ const PayRow = styled.td`
   color: blue;
   cursor: pointer;
 `
-export default function LoansTable({loans}) {
+const statusArray = ['pending', 'rolling', 'done']
+
+export default function LoansTable({loans, loaned}) {
   return (
     <TableContainer>
       <table>
@@ -19,7 +21,7 @@ export default function LoansTable({loans}) {
             <th>Borrower</th>
             <th>Lender</th>
             <th>Due Date</th>
-            <th>Name</th>
+            <th>Amount</th>
             <th>Status</th>
             <th>Payment</th>
           </tr>
@@ -32,8 +34,8 @@ export default function LoansTable({loans}) {
               <td key={key}>{loan.lender}</td>
               <td key={key}>{Date(loan.dueDate)}</td>
               <td key={key}>{loan.amount}</td>
-              <td key={key}>{loan.status}</td>
-              <PayRow>Pay now!</PayRow>
+              <td key={key}>{statusArray[loan.status]}</td>
+              <PayRow>{loaned ? "Accept!" : "Pay Now!"}</PayRow>
             </tr>
           ))}
         </tbody>

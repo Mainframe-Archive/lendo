@@ -21,7 +21,7 @@ export default function Loaned() {
   return (
     <div>
       <h1>Loaned Loans</h1>
-      <LoansTable loans={loans} />
+      <LoansTable loans={loans} loaned/>
     </div>
   )
 }
