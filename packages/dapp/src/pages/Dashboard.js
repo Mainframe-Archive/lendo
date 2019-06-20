@@ -1,28 +1,15 @@
 // @flow
 import React, { useState, useEffect } from 'react'
 import Layout from 'ui/Layouts/default'
-// import styled from 'styled-components'
-import { sdk, web3 } from 'services/Mainframe'
-
-import { abi, contractAddress } from 'abi'
+import { sdk, contract } from 'services/Mainframe'
 
 export default function Dashboard () {
-
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
   const [loanAmount, setLoanAmount] = useState(0)
   const [loanDueDate, setLoanDueDate] = useState()
   const [loadingStatus, setLoadingStatus] = useState(false)
   const [showMsg, setShowMsg] = useState(false)
-
-  const [contract, setContract] = useState()
-  useEffect(() => {
-    const initializeContract = async () => {
-      const contract = new web3.eth.Contract(abi, contractAddress)
-      setContract(contract)
-    }
-    initializeContract()
-  }, [])
 
   const [ownAccount, setOwnAccount] = useState()
   useEffect(() => {
@@ -35,7 +22,7 @@ export default function Dashboard () {
 
   const [loans, setLoans] = useState([])
   useEffect(() => {
-    if (!contract || !ownAccount) return
+    if (!ownAccount) return
 
     const fetchForLoans = async () => {
       const newLoans = await contract.methods
@@ -47,7 +34,7 @@ export default function Dashboard () {
       setLoans(Object.entries(newLoans))
     }
     fetchForLoans()
-  }, [contract, ownAccount])
+  }, [ownAccount])
 
   async function selectContactFromMainframe () {
     const contact = await sdk.contacts.selectContact()
