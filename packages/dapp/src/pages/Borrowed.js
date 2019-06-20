@@ -20,7 +20,7 @@ export default function Borrowed() {
   return (
     <div>
       <h1>Borrowed Page</h1>
-      {LoansTable(loans)}
+      <LoansTable loans={loans} />
     </div>
   )
 }
