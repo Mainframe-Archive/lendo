@@ -4,7 +4,7 @@ import { sdk } from 'services/Mainframe'
 
 import { useBorrowerLoans } from 'services/Loans'
 import LoansTable from 'ui/LoansTable'
-export default function Borrowed () {
+export default function Borrowed() {
 
   const [ownAccount, setOwnAccount] = useState()
   useEffect(() => {

@@ -5,7 +5,11 @@ import { sdk, web3, contract } from 'services/Mainframe'
 import { useBorrowerLoans } from 'services/Loans'
 import LoansTable from 'ui/LoansTable'
 
+<<<<<<< HEAD
 export default function Dashboard () {
+=======
+export default function Dashboard() {
+>>>>>>> develop
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
   const [loanAmount, setLoanAmount] = useState(0)
@@ -25,7 +29,7 @@ export default function Dashboard () {
 
   const loans = useBorrowerLoans(ownAccount)
 
-  async function selectContactFromMainframe () {
+  async function selectContactFromMainframe() {
     const contact = await sdk.contacts.selectContact()
     if (contact) {
       const { ethAddress } = contact.data.profile
@@ -38,7 +42,7 @@ export default function Dashboard () {
     }
   }
 
-  async function createNewLoanContract (event) {
+  async function createNewLoanContract(event) {
     event.preventDefault()
     setLoadingStatus(true)
     if (contract) {
@@ -128,7 +132,7 @@ export default function Dashboard () {
   )
 }
 
-function calcDebt (amount) {
+function calcDebt(amount) {
   const interest = 0.0127
   const newAmount = amount * (1 + interest)
   return newAmount
