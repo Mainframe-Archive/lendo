@@ -1,34 +1,19 @@
 // @flow
 import React, { useState, useEffect } from 'react'
-// import styled from 'styled-components'
-import { sdk, web3 } from 'services/Mainframe'
+import styled from 'styled-components'
+import { sdk, web3, contract } from 'services/Mainframe'
+import { useBorrowerLoans } from 'services/Loans'
+import LoansTable from 'ui/LoansTable'
 
-import { abi, contractAddress } from 'abi'
-
-// const Container = styled.View`
-//   flex: 1;
-//   flex-direction: row;
-//   width: 300px;
-//   height: 300px;
-//   background-color: #262626;
-// `
 
 export default function Dashboard() {
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
   const [loanAmount, setLoanAmount] = useState(0)
   const [loanDueDate, setLoanDueDate] = useState()
+  const [loanName, setLoanName] = useState()
   const [loadingStatus, setLoadingStatus] = useState(false)
   const [showMsg, setShowMsg] = useState(false)
-
-  const [contract, setContract] = useState()
-  useEffect(() => {
-    const initializeContract = async () => {
-      const contract = new web3.eth.Contract(abi, contractAddress)
-      setContract(contract)
-    }
-    initializeContract()
-  }, [])
 
   const [ownAccount, setOwnAccount] = useState()
   useEffect(() => {
@@ -39,21 +24,7 @@ export default function Dashboard() {
     initializeOwnAccount()
   }, [])
 
-  const [loans, setLoans] = useState([])
-  useEffect(() => {
-    if (!contract || !ownAccount) return
-
-    const fetchForLoans = async () => {
-      const newLoans = await contract.methods
-        .getLoanAtAddress(ownAccount)
-        .call()
-
-      // const editedNewLoans = typeof newLoans === 'func a' : Object.entries(newLoans)
-      //  $FlowFixMe
-      setLoans(Object.entries(newLoans))
-    }
-    fetchForLoans()
-  }, [contract, ownAccount])
+  const loans = useBorrowerLoans(ownAccount)
 
   async function selectContactFromMainframe() {
     const contact = await sdk.contacts.selectContact()
@@ -72,8 +43,9 @@ export default function Dashboard() {
     event.preventDefault()
     setLoadingStatus(true)
     if (contract) {
+      const dueDate = new Date(loanDueDate).getTime() / 1000
       const writeLoan = await contract.methods
-        .requestLoanRob(selectedContact, loanAmount)
+        .requestLoan(selectedContact, loanName, loanAmount, dueDate)
         .send({ from: ownAccount })
 
       if (writeLoan) {
@@ -95,9 +67,7 @@ export default function Dashboard() {
     <div className="App">
       <h1>{showMsg ? 'Loan created successfully!' : ''}</h1>
       <h1>My Loans</h1>
-      {loans.map((loan, key) => (
-        <div key={key}>{loan}</div>
-      ))}
+      <LoansTable loans={loans}/>
       {showNewLoan ? (
         <form style={{ justifyContent: 'center' }}>
           <div className="form-container">
@@ -107,6 +77,14 @@ export default function Dashboard() {
                 Select your Friend
               </button>
               <div>{selectedContact}</div>
+            </div>
+            <div className="row-item">
+              <div>Name</div>
+              <input
+                value={loanName}
+                onChange={e => setLoanName(e.target.value)}
+                type="text"
+              />
             </div>
             <div className="row-item">
               <div>Amount (DAI)</div>
