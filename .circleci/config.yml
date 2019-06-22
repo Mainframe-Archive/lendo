@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - checkout:
-        path: ~/lendo
+          path: ~/lendo
 
       # Download and cache dependencies
       - restore_cache:
