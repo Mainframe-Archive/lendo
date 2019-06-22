@@ -39,3 +39,7 @@ jobs:
           name: Run smart contract tests
           working_directory: ~/lendo/packages/loan-contract/
           command: yarn test
+      - run:
+          name: Run dapp tests
+          working_directory: ~/lendo/packages/dapp/
+          command: yarn test
