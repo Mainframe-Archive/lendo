@@ -5,8 +5,7 @@ jobs:
       - image: circleci/node:10.16.0
     working_directory: ~/lendo
     steps:
-      - checkout:
-          path: ~/lendo
+      - checkout
 
       - restore_cache:
           keys:
@@ -35,11 +34,18 @@ jobs:
             - packages/loan-contract/node_modules
           key: loan-contract-dependencies-{{ checksum "packages/loan-contract/package.json" }}
 
+      - persist_to_workspace:
+          root: ~/lendo
+          paths:
+            - packages/*
+
   build_and_test_contracts:
     docker:
       - image: circleci/node:10.16.0
     working_directory: ~/lendo/packages/loan-contract/
     steps:
+      - attach_workspace:
+          at: ~/lendo
       - run:
           name: Run smart contract tests
           command: yarn test
@@ -49,6 +55,8 @@ jobs:
       - image: circleci/node:10.16.0
     working_directory: ~/lendo/packages/dapp/
     steps:
+      - attach_workspace:
+          at: ~/lendo
       - run:
           name: Run dapp tests
           command: yarn test
