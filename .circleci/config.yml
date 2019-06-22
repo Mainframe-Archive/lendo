@@ -12,16 +12,21 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no ei've bxact match is found
-          - v1-dependencies-
+            - dapp-dependencies-{{ checksum "packages/dapp/package.json" }}
+      - restore_cache:
+          keys:
+            - loan-contract-dependencies-{{ checksum "packages/loan-contract/package.json" }}
 
       - run: yarn install
 
       - save_cache:
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - packages/dapp/node_modules
+          key: dapp-dependencies-{{ checksum "packages/dapp/package.json" }}
+      - save_cache:
+          paths:
+            - packages/loan-contract/node_modules
+          key: loan-contract-dependencies-{{ checksum "packages/loan-contract/package.json" }}
 
       - run:
           name: Run smart contract tests
