@@ -12,13 +12,22 @@ jobs:
 
       - restore_cache:
           keys:
+            - lendo-dependencies-{{ checksum "package.json" }}
+      - restore_cache:
+          keys:
             - dapp-dependencies-{{ checksum "packages/dapp/package.json" }}
       - restore_cache:
           keys:
             - loan-contract-dependencies-{{ checksum "packages/loan-contract/package.json" }}
 
-      - run: yarn install
+      - run:
+          name: Installing dependencies
+          command: yarn && npx lerna bootstrap
 
+      - save_cache:
+          paths:
+            - node_modules
+          key: lendo-dependencies-{{ checksum "package.json" }}
       - save_cache:
           paths:
             - packages/dapp/node_modules
@@ -37,3 +46,4 @@ jobs:
           name: Run dapp tests
           working_directory: ~/lendo/packages/dapp/
           command: yarn test
+

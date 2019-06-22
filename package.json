@@ -16,9 +16,5 @@
   "homepage": "https://github.com/MainframeHQ/social-lending-dapp#readme",
   "devDependencies": {
     "lerna": "^3.15.0"
-  },
-  "workspaces": {
-    "packages": ["packages/*"],
-    "nohoist": ["**/**"]
   }
 }
