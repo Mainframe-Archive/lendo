@@ -35,4 +35,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: cd ~/lendo/packages/loan-contract/ && yarn test
+      - run:
+          name: Run smart contract tests
+          working_directory: ~/lendo/packages/loan-contract/
+          command: yarn test
