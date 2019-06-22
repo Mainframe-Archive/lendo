@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "truffle build",
-    "test": "truffle test"
+    "test": "truffle compile && truffle test"
   },
   "author": "Willian Mitsuda <willian@mainframe.com>",
   "license": "MIT",
