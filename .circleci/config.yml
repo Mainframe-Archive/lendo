@@ -1,74 +1,50 @@
 version: 2
 jobs:
-  build:
+  build_and_test_contracts:
     docker:
       - image: circleci/node:10.16.0
     working_directory: ~/lendo
     steps:
       - checkout
-
-      - restore_cache:
-          keys:
-            - lendo-dependencies-{{ checksum "package.json" }}
-      - restore_cache:
-          keys:
-            - dapp-dependencies-{{ checksum "packages/dapp/package.json" }}
       - restore_cache:
           keys:
             - loan-contract-dependencies-{{ checksum "packages/loan-contract/package.json" }}
-
       - run:
-          name: Installing dependencies
-          command: yarn && npx lerna bootstrap
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: lendo-dependencies-{{ checksum "package.json" }}
-      - save_cache:
-          paths:
-            - packages/dapp/node_modules
-          key: dapp-dependencies-{{ checksum "packages/dapp/package.json" }}
+          working_directory: ~/lendo/packages/loan-contract/
+          command: yarn install
+      - run:
+          name: Run smart contract tests
+          working_directory: ~/lendo/packages/loan-contract/
+          command: yarn test
       - save_cache:
           paths:
             - packages/loan-contract/node_modules
           key: loan-contract-dependencies-{{ checksum "packages/loan-contract/package.json" }}
 
-      - persist_to_workspace:
-          root: ~/lendo
-          paths:
-            - packages/*
-
-  build_and_test_contracts:
-    docker:
-      - image: circleci/node:10.16.0
-    working_directory: ~/lendo/packages/loan-contract/
-    steps:
-      - attach_workspace:
-          at: ~/lendo
-      - run:
-          name: Run smart contract tests
-          command: yarn test
-
   build_and_test_dapp:
     docker:
       - image: circleci/node:10.16.0
-    working_directory: ~/lendo/packages/dapp/
+    working_directory: ~/lendo
     steps:
-      - attach_workspace:
-          at: ~/lendo
+      - checkout
+      - restore_cache:
+          keys:
+            - dapp-dependencies-{{ checksum "packages/dapp/package.json" }}
+      - run:
+          working_directory: ~/lendo/packages/dapp/
+          command: yarn install
       - run:
           name: Run dapp tests
+          working_directory: ~/lendo/packages/dapp/
           command: yarn test
+      - save_cache:
+          paths:
+            - packages/dapp/node_modules
+          key: dapp-dependencies-{{ checksum "packages/dapp/package.json" }}
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - build_and_test_contracts:
-          requires:
-            - build
-      - build_and_test_dapp:
-          requires:
-            - build
+      - build_and_test_contracts
+      - build_and_test_dapp
