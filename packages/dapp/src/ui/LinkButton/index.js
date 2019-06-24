@@ -1,7 +1,7 @@
 // @flow
 import React, { type Node } from 'react'
 import Button from 'ui/Button'
-import Link from 'react-router-dom/Link'
+import { Link } from 'react-router-dom'
 
 type Props = {
   children: Node,
