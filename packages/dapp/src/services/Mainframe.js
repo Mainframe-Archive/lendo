@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import MainframeSDK from '@mainframe/sdk'
 import Web3 from 'web3'
 import { abi, contractAddress } from 'abi'
@@ -8,4 +9,14 @@ export const contract = new web3.eth.Contract(abi, contractAddress)
 
 export function getOwnAccount () {
   return sdk.ethereum.getDefaultAccount()
+}
+
+export function useOwnAccount () {
+  const [ownAccount, setOwnAccount] = useState()
+
+  useEffect(() => {
+    getOwnAccount().then(setOwnAccount)
+  }, [])
+
+  return ownAccount
 }

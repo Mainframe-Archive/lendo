@@ -1,6 +1,6 @@
 // @flow
-import React, { useState, useEffect } from 'react'
-import {sdk, contract, getOwnAccount} from 'services/Mainframe'
+import React, { useState } from 'react'
+import {sdk, contract, useOwnAccount} from 'services/Mainframe'
 import { useBorrowerLoans } from 'services/Loans'
 import Layout from 'ui/Layouts/default'
 import LoansTable from 'ui/LoansTable'
@@ -15,12 +15,7 @@ export default function Dashboard () {
   const [loadingStatus, setLoadingStatus] = useState(false)
   const [showMsg, setShowMsg] = useState(false)
 
-  const [ownAccount, setOwnAccount] = useState()
-
-  useEffect(() => {
-    getOwnAccount().then(setOwnAccount)
-  }, [])
-
+  const ownAccount = useOwnAccount()
   const loans = useBorrowerLoans(ownAccount)
 
   async function selectContactFromMainframe() {
