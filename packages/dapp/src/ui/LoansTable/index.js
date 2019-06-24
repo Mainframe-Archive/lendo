@@ -38,7 +38,7 @@ export default function LoansTable({loans, loaned}: Props) {
               <td>{loan.name}</td>
               <td>{loan.borrower}</td>
               <td>{loan.lender}</td>
-              <td>{(new Date(loan.dueDate)).toString()}</td>
+              <td>{(Date(loan.dueDate))}</td>
               <td>{loan.amount}</td>
               <td>{statusArray[loan.status]}</td>
               <PayRow>{loaned ? "Accept!" : "Pay Now!"}</PayRow>

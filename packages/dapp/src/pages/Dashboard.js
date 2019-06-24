@@ -1,9 +1,7 @@
 // @flow
 import React, { useState } from 'react'
 import {contract, useOwnAccount} from 'services/Mainframe'
-import { useBorrowerLoans } from 'services/Loans'
 import Layout from 'ui/Layouts/default'
-import LoansTable from 'ui/LoansTable'
 import LoanForm from 'ui/LoanForm'
 
 export default function Dashboard () {
@@ -12,14 +10,11 @@ export default function Dashboard () {
   const [showMsg, setShowMsg] = useState(false)
 
   const ownAccount = useOwnAccount()
-  const loans = useBorrowerLoans(ownAccount)
 
   if (loadingStatus) return <div>Loading...</div>
   return (
     <Layout title="Dashboard">
       <h1>{showMsg ? 'Loan created successfully!' : ''}</h1>
-      <h1>My Loans</h1>
-      <LoansTable loans={loans}/>
       {showNewLoan ? (
         <LoanForm onSubmit={(data) => {
           setLoadingStatus(true)
