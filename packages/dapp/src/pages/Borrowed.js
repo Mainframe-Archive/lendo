@@ -10,7 +10,6 @@ export default function Borrowed() {
 
   return (
     <Layout title="Borrowed">
-      <h1>Borrowed Page</h1>
       <LoansTable loans={loans} />
     </Layout>
   )
