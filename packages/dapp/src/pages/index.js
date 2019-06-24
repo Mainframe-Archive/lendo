@@ -7,11 +7,11 @@ import NewLoanConfirmation from 'pages/NewLoanConfirmation'
 import Requests from 'pages/Requests'
 
 export {
-Borrowed,
-BorrowedDetail,
-Dashboard,
-Loaned,
-NewLoan,
-NewLoanConfirmation,
-Requests,
+  Borrowed,
+  BorrowedDetail,
+  Dashboard,
+  Loaned,
+  NewLoan,
+  NewLoanConfirmation,
+  Requests,
 }

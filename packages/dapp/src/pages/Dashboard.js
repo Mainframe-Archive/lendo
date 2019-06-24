@@ -1,42 +1,29 @@
 // @flow
 import React, { useState, useEffect } from 'react'
+import {sdk, contract, getOwnAccount} from 'services/Mainframe'
+import { useBorrowerLoans } from 'services/Loans'
 import Layout from 'ui/Layouts/default'
-import { sdk, contract } from 'services/Mainframe'
+import LoansTable from 'ui/LoansTable'
+
 
 export default function Dashboard () {
   const [showNewLoan, setShowNewLoan] = useState(false)
   const [selectedContact, setSelectedContact] = useState('')
   const [loanAmount, setLoanAmount] = useState(0)
-  const [loanDueDate, setLoanDueDate] = useState()
+  const [loanDueDate, setLoanDueDate] = useState<number|void>()
+  const [loanName, setLoanName] = useState()
   const [loadingStatus, setLoadingStatus] = useState(false)
   const [showMsg, setShowMsg] = useState(false)
 
   const [ownAccount, setOwnAccount] = useState()
+
   useEffect(() => {
-    const initializeOwnAccount = async () => {
-      const ownAccount = await sdk.ethereum.getDefaultAccount()
-      setOwnAccount(ownAccount)
-    }
-    initializeOwnAccount()
+    getOwnAccount().then(setOwnAccount)
   }, [])
 
-  const [loans, setLoans] = useState([])
-  useEffect(() => {
-    if (!ownAccount) return
+  const loans = useBorrowerLoans(ownAccount)
 
-    const fetchForLoans = async () => {
-      const newLoans = await contract.methods
-        .getLoanAtAddress(ownAccount)
-        .call()
-
-      // const editedNewLoans = typeof newLoans === 'func a' : Object.entries(newLoans)
-      //  $FlowFixMe
-      setLoans(Object.entries(newLoans))
-    }
-    fetchForLoans()
-  }, [ownAccount])
-
-  async function selectContactFromMainframe () {
+  async function selectContactFromMainframe() {
     const contact = await sdk.contacts.selectContact()
     if (contact) {
       const { ethAddress } = contact.data.profile
@@ -49,12 +36,13 @@ export default function Dashboard () {
     }
   }
 
-  async function createNewLoanContract (event) {
+  async function createNewLoanContract(event) {
     event.preventDefault()
     setLoadingStatus(true)
-    if (contract) {
+    if (contract && typeof loanDueDate === 'number') {
+      const dueDate = new Date(loanDueDate).getTime() / 1000
       const writeLoan = await contract.methods
-        .requestLoanRob(selectedContact, loanAmount)
+        .requestLoan(selectedContact, loanName, loanAmount, dueDate)
         .send({ from: ownAccount })
 
       if (writeLoan) {
@@ -64,7 +52,6 @@ export default function Dashboard () {
       } else {
         // error msg
       }
-
 
       setTimeout(() => {
         setShowMsg(false)
@@ -77,9 +64,7 @@ export default function Dashboard () {
     <Layout title="Dashboard">
       <h1>{showMsg ? 'Loan created successfully!' : ''}</h1>
       <h1>My Loans</h1>
-      {loans.map((loan, key) => (
-        <div key={key}>{loan}</div>
-      ))}
+      <LoansTable loans={loans}/>
       {showNewLoan ? (
         <form style={{ justifyContent: 'center' }}>
           <div className="form-container">
@@ -89,6 +74,14 @@ export default function Dashboard () {
                 Select your Friend
               </button>
               <div>{selectedContact}</div>
+            </div>
+            <div className="row-item">
+              <div>Name</div>
+              <input
+                value={loanName}
+                onChange={e => setLoanName(e.target.value)}
+                type="text"
+              />
             </div>
             <div className="row-item">
               <div>Amount (DAI)</div>
@@ -133,7 +126,7 @@ export default function Dashboard () {
   )
 }
 
-function calcDebt (amount) {
+function calcDebt(amount) {
   const interest = 0.0127
   const newAmount = amount * (1 + interest)
   return newAmount

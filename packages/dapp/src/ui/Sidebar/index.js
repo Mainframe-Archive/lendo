@@ -35,7 +35,7 @@ const SidebarContainer = styled.aside`
   }
 `
 
-export default function Sidebar () {
+export default function Sidebar() {
   return (
     <SidebarContainer>
       Pages
