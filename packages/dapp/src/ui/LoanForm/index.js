@@ -39,6 +39,7 @@ export default function LoanForm ({ onSubmit }: Props) {
         loanName,
         loanAmount
       })
+
       setSubmitting(false)
     }}>
       <div className="form-container">
