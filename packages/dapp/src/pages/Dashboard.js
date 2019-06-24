@@ -31,10 +31,11 @@ export default function Dashboard () {
             .catch(() => {
               // error msg
             })
-
-            window.setTimeout(() => {
-              setShowMsg(false)
-            }, 3000)
+            .finally(() => {
+              window.setTimeout(() => {
+                setShowMsg(false)
+              }, 3000)
+            })
           }
         }} />
       ) : (
