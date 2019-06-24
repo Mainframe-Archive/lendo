@@ -11,7 +11,7 @@ export default function Loaned () {
 
   return (
     <Layout title="Loaned">
-      <LoansTable loans={loans} />
+      <LoansTable loans={loans} loaned />
     </Layout>
   )
 }
