@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { sdk, web3, contract } from 'services/Mainframe'
+import { contract } from 'services/Mainframe'
 
 export function useBorrowerLoans(borrowerAddress) {
   const [loans, setLoans] = useState([])
@@ -31,6 +31,7 @@ export function useBorrowerLoans(borrowerAddress) {
     }
    if (borrowerAddress) getLoansByBorrower_()
   }, [borrowerAddress])
+
   return loans
 }
 
@@ -62,7 +63,9 @@ export function useLendedLoans(lenderAddress) {
         console.log('err', err)
       }
     }
+
    if (lenderAddress) getLoansByLender_()
  }, [lenderAddress])
+
   return loans
 }

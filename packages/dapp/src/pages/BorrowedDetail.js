@@ -1,10 +1,12 @@
 // @flow
 import React from 'react'
+import Button from 'ui/Button'
+import Layout from 'ui/Layouts/default'
 
-export default function BorrowedDetails() {
+export default function BorrowedDetail () {
   return (
-    <div>
-      <h1>Sample Page</h1>
-    </div>
+    <Layout title="Borrowed Detail">
+      <Button>Next</Button>
+    </Layout>
   )
 }
