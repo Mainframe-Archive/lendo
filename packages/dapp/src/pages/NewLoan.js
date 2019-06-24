@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Layout from 'ui/Layouts/default'
 import LoanForm from 'ui/LoanForm'
-import { contract, useOwnAccount } from 'services/Mainframe'
+import { contract, useOwnAccount } from 'services/LoanService'
 
 export default function NewLoan () {
   const [showNewLoan, setShowNewLoan] = useState(false)

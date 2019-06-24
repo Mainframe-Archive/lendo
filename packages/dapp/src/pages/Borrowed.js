@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
-import { useOwnAccount } from 'services/Mainframe'
-import { useBorrowerLoans } from 'services/Loans'
+import { useOwnAccount, useBorrowerLoans } from 'services/LoanService'
 import LoansTable from 'ui/LoansTable'
 import Layout from 'ui/Layouts/default'
 

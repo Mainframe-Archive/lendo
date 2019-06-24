@@ -1,6 +1,6 @@
 // @flow
 import React, { useState, useEffect } from 'react'
-import {sdk} from "services/Mainframe"
+import {sdk} from "services/LoanService"
 import Button from 'ui/Button'
 
 type Props = {
