@@ -11,7 +11,7 @@ import { createGlobalStyle } from 'styled-components'
 
 import Sidebar from 'ui/Sidebar'
 
-import { Dashboard, Loaned, Borrowed, Requests, NewLoan } from 'pages'
+import { Dashboard, Loaned, Borrowed, Requests, NewLoanSetup } from 'pages'
 
 import { defaultFontFamily, defaultFontSize, defaultTextColor } from 'theme'
 
@@ -43,7 +43,7 @@ export default function App() {
     <Router>
       <GlobalStyles />
       <Switch>
-        <Route exact path="/new-loan" component={NewLoan} />
+        <Route exact path="/new-loan" component={NewLoanSetup} />
         <Route>
           <Sidebar />
           <Switch>
