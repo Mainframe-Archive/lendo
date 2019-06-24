@@ -12,10 +12,10 @@ const PayRow = styled.td`
 
 type Props = {
   loans: Array<any>,
-  loaned: boolean
+  loaned?: boolean
 }
 
-export default function LoansTable({loans, loaned}: Props) {
+export default function LoansTable({loans, loaned = false}: Props) {
   const statusArray = ['pending', 'rolling', 'done']
 
   return (

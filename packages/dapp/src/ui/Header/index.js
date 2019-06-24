@@ -3,7 +3,7 @@ import React, { type Node } from 'react'
 import styled from 'styled-components'
 
 type Props = {
-  children: Node,
+  children?: Node,
   title: Node
 }
 

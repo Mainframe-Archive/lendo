@@ -13,7 +13,7 @@ const Main = styled.main`
 
 type Props = {
   title: Node,
-  children: Node
+  children?: Node
 }
 
 export default function DefaultLayout ({ children, title }: Props) {
