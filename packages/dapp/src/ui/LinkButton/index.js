@@ -7,13 +7,14 @@ import { Link } from 'react-router-dom'
 type Props = {
   children: Node,
   to: string,
-  className?: string
+  className?: string,
+  primary?: boolean
 }
 
-export default function ButtonLink({className, children, to}: Props) {
+export default function LinkButton ({ className, children, to, primary, ...props }: Props) {
   return (
-    <Link to={to} className={classnames(className)}>
-      <Button primary>{children}</Button>
+    <Link to={to} className={classnames(className)} {...props}>
+      <Button primary={primary}>{children}</Button>
     </Link>
   )
 }

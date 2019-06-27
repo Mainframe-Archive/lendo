@@ -44,7 +44,7 @@ const SidebarContainer = styled.aside`
 export default function Sidebar() {
   return (
     <SidebarContainer>
-      <LinkButton to="/new-loan" className="create-loan-btn">
+      <LinkButton to="/new-loan" className="create-loan-btn" primary>
         Create Loan
       </LinkButton>
 
