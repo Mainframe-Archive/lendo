@@ -17,5 +17,6 @@ module.name_mapper='^App$' -> '<PROJECT_ROOT>/src/App.js'
 module.name_mapper='^index' -> '<PROJECT_ROOT>/src/index.js'
 module.name_mapper='^styles' -> '<PROJECT_ROOT>/src/styles.js'
 module.name_mapper='^theme' -> '<PROJECT_ROOT>/src/theme.js'
+module.name_mapper='^types' -> '<PROJECT_ROOT>/src/types.js'
 
 [strict]
