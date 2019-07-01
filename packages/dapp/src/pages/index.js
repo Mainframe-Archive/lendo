@@ -2,7 +2,7 @@ import Borrowed from 'pages/Borrowed'
 import BorrowedDetail from 'pages/BorrowedDetail'
 import Dashboard from 'pages/Dashboard'
 import Loaned from 'pages/Loaned'
-import NewLoan from 'pages/NewLoan'
+import NewLoanSetup from 'pages/NewLoanSetup'
 import NewLoanConfirmation from 'pages/NewLoanConfirmation'
 import Requests from 'pages/Requests'
 
@@ -11,7 +11,7 @@ export {
   BorrowedDetail,
   Dashboard,
   Loaned,
-  NewLoan,
+  NewLoanSetup,
   NewLoanConfirmation,
   Requests,
 }

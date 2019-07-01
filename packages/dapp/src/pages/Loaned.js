@@ -1,10 +1,9 @@
 // @flow
 import React from 'react'
-import { useOwnAccount } from 'services/Mainframe'
-import { useLendedLoans } from 'services/Loans'
 import LoansTable from 'ui/LoansTable'
 import Layout from 'ui/Layouts/default'
-import { loanContract, erc20Contract } from 'services/Mainframe'
+
+import { useLendedLoans, useOwnAccount, loanContract, erc20Contract } from 'services/LoanService'
 import { loanAddress } from 'contracts/loan'
 
 export default function Loaned() {

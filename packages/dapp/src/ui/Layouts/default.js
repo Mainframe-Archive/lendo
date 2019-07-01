@@ -2,7 +2,6 @@
 import React, { type Node } from 'react'
 import styled from 'styled-components'
 import Header from 'ui/Header'
-import LinkButton from 'ui/LinkButton'
 
 const Main = styled.main`
   flex: 1;
@@ -14,17 +13,13 @@ const Main = styled.main`
 
 type Props = {
   title: Node,
-  children: Node
+  children?: Node
 }
 
 export default function DefaultLayout ({ children, title }: Props) {
   return (
     <Main>
-      <Header title={title}>
-        <LinkButton to="/new-loan">
-          Create Loan
-        </LinkButton>
-      </Header>
+      <Header title={title} />
       <div className="layout-body">
         {children}
       </div>

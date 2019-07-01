@@ -1,6 +1,6 @@
 // @flow
-import React, { useState, useEffect } from 'react'
-import {sdk} from "services/Mainframe"
+import React, { useState } from 'react'
+import {sdk} from "services/LoanService"
 import Button from 'ui/Button'
 
 type Props = {
@@ -39,6 +39,7 @@ export default function LoanForm ({ onSubmit }: Props) {
         loanName,
         loanAmount
       })
+
       setSubmitting(false)
     }}>
       <div className="form-container">
