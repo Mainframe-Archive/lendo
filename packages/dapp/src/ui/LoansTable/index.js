@@ -15,7 +15,7 @@ type Props = {
   loaned: boolean
 }
 
-export default function LoansTable({loans, loaned}: Props) {
+export default function LoansTable({loans, loaned, onAccept}: Props) {
   const statusArray = ['pending', 'rolling', 'done']
 
   return (
@@ -41,7 +41,7 @@ export default function LoansTable({loans, loaned}: Props) {
               <td>{(Date(loan.dueDate))}</td>
               <td>{loan.amount}</td>
               <td>{statusArray[loan.status]}</td>
-              <PayRow>{loaned ? "Accept!" : "Pay Now!"}</PayRow>
+              <PayRow onClick={(e) => onAccept(loan, key)}>{loaned ? "Accept!" : "Pay Now!"}</PayRow>
             </tr>
           ))}
         </tbody>
