@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Layout from 'ui/Layouts/default'
 import LoanForm from 'ui/LoanForm'
-import { contract, useOwnAccount } from 'services/LoanService'
+import { loanContract, useOwnAccount } from 'services/LoanService'
 
 export default function NewLoanSetup () {
   const [loadingStatus, setLoadingStatus] = useState(false)
@@ -19,9 +19,9 @@ export default function NewLoanSetup () {
       <LoanForm onSubmit={(data) => {
         setLoadingStatus(true)
 
-        if (contract) {
-          contract.methods
-          .requestLoan(data.selectedContact, data.loanName, data.loanAmount, data.dueDate)
+        if (loanContract) {
+          loanContract.methods
+          .requestLoan("0x3559982eab76455749968c0b74bd8119fb9a7709", data.loanName, data.loanAmount, data.dueDate)
           .send({ from: ownAccount })
           .then(() => {
             setShowMsg(true)

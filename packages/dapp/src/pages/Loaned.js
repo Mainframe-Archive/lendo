@@ -21,18 +21,18 @@ export default function Loaned() {
       .then(e => {
         console.log('approving contract Address - 3rd party to make a transfer in my name')
         console.log(e)
-        contract.methods
+        loanContract.methods
           .approveLoan(index)
           .send({ from: ownAccount })
           .then(e => {
-            console.log('terminou o paranaue')
+            console.log('finish both contracts successfully')
           })
       })
       .catch(error => {
         console.log('error', error)
       })
       .finally(() => {
-        console.log('acabou tudo')
+        console.log('finally')
       })
   }
 
