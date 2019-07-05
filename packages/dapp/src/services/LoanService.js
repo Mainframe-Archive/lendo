@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react'
 import MainframeSDK from '@mainframe/sdk'
 import Web3 from 'web3'
 import { abi, contractAddress } from 'abi'
+import type { NewLoanData } from 'types'
+import { toIntString } from 'util/formatNumber'
 
 export const sdk = new MainframeSDK()
 export const web3 = new Web3(sdk.ethereum.web3Provider)
 export const contract = new web3.eth.Contract(abi, contractAddress)
 
-export function getOwnAccount () {
+export function getOwnAccount() {
   return sdk.ethereum.getDefaultAccount()
 }
 
-export function useOwnAccount () {
+export function useOwnAccount() {
   const [ownAccount, setOwnAccount] = useState()
 
   useEffect(() => {
@@ -29,18 +31,16 @@ export function useBorrowerLoans(borrowerAddress) {
       try {
         const newLoans = []
         const loansArrayLength = await contract.methods
-        .loanCountByBorrower(borrowerAddress)
-        .call()
+          .loanCountByBorrower(borrowerAddress)
+          .call()
 
         //change for paralell requests in the future - ordenation needed
         for (let i = 0; i < loansArrayLength; i++) {
           const loanIndex = await contract.methods
-          .loansByBorrower(borrowerAddress, i)
-          .call()
+            .loansByBorrower(borrowerAddress, i)
+            .call()
 
-          const currentLoan = await contract.methods
-          .loans(loanIndex)
-          .call()
+          const currentLoan = await contract.methods.loans(loanIndex).call()
 
           newLoans.push(currentLoan)
         }
@@ -63,18 +63,16 @@ export function useLendedLoans(lenderAddress) {
       try {
         const newLoans = []
         const loansArrayLength = await contract.methods
-        .loanCountByLender(lenderAddress)
-        .call()
+          .loanCountByLender(lenderAddress)
+          .call()
 
         //change for paralell requests in the future - ordenation needed
         for (let i = 0; i < loansArrayLength; i++) {
           const loanIndex = await contract.methods
-          .loansByLender(lenderAddress, i)
-          .call()
+            .loansByLender(lenderAddress, i)
+            .call()
 
-          const currentLoan = await contract.methods
-          .loans(loanIndex)
-          .call()
+          const currentLoan = await contract.methods.loans(loanIndex).call()
 
           newLoans.push(currentLoan)
         }
@@ -88,4 +86,13 @@ export function useLendedLoans(lenderAddress) {
   }, [lenderAddress])
 
   return loans
+}
+
+export function requestLoan(data: NewLoanData): Promise<void> {
+  return contract.methods.requestLoan(
+    data.selectedContact.ethAddress,
+    data.loanName,
+    parseInt(toIntString(data.loanAmount)),
+    new Date(data.dueDate).getTime() / 1000,
+  )
 }
