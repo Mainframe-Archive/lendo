@@ -1,100 +1,131 @@
 // @flow
 import React, { useState } from 'react'
-import {sdk} from "services/LoanService"
+import { sdk } from 'services/LoanService'
 import Button from 'ui/Button'
+import Field from 'ui/Field'
+import Fieldset from 'ui/Fieldset'
+import FormActions from 'ui/FormActions'
+import FormTitle from 'ui/FormTitle'
+import TitleInput from 'ui/TitleInput'
+import LinkButton from 'ui/LinkButton'
+import type { NewLoanData } from 'types'
+import calculateSimpleInterest from 'util/calculateSimpleInterest'
 
 type Props = {
-  onSubmit: (data: mixed) => void
+  onSubmit: (data: NewLoanData) => void,
 }
 
-export default function LoanForm ({ onSubmit }: Props) {
-  const [selectedContact, setSelectedContact] = useState('')
-  const [loanAmount, setLoanAmount] = useState(0)
-  const [loanDueDate, setLoanDueDate] = useState<number|void>()
-  const [loanName, setLoanName] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-
-  async function selectContactFromMainframe() {
-    const contact = await sdk.contacts.selectContact()
-    if (contact) {
-      const { ethAddress } = contact.data.profile
-      if (!ethAddress) {
-        //error msg
-        // console.log('The selected contact does not have a public ETH address')
-      } else {
-        setSelectedContact(ethAddress)
-      }
-    }
-  }
+export default function LoanForm({ onSubmit }: Props) {
+  const [selectedContact, setSelectedContact] = useState({})
+  const [loanAmount, setLoanAmount] = useState('')
+  const [interest, setInterest] = useState('')
+  const [paymentPlan, setPaymentPlan] = useState(0)
+  const [dueDate, setDueDate] = useState<number | void>()
+  const [loanTitle, setLoanTitle] = useState('')
 
   return (
-    <form style={{ justifyContent: 'center' }} onSubmit={event => {
-      event.preventDefault()
-      setSubmitting(true)
-      const dueDate = new Date(loanDueDate).getTime() / 1000
+    <form
+      onSubmit={event => {
+        event.preventDefault()
 
-      onSubmit({
-        dueDate,
-        selectedContact,
-        loanName,
-        loanAmount
-      })
+        onSubmit({
+          dueDate,
+          selectedContact: selectedContact,
+          loanName: loanTitle,
+          loanAmount: loanAmount || 0,
+          interest: interest || 0,
+        })
+      }}>
+      <FormTitle>Terms</FormTitle>
 
-      setSubmitting(false)
-    }}>
-      <div className="form-container">
-        <div className="row-item">
-          <div>Lender</div>
-          <button type="button" onClick={selectContactFromMainframe}>
-            Select your Friend
-          </button>
-          <div>{selectedContact}</div>
-        </div>
-        <div className="row-item">
-          <div>Name</div>
-          <input
-            value={loanName}
-            onChange={e => setLoanName(e.target.value)}
-            type="text"
-          />
-        </div>
-        <div className="row-item">
-          <div>Amount (DAI)</div>
-          <input
-            value={loanAmount}
-            onChange={e => setLoanAmount(e.target.value)}
-            type="text"
-          />
-        </div>
-        <div className="row-item">
-          <div>Due Date</div>
-          <input
-            value={loanDueDate}
-            onChange={e => setLoanDueDate(e.target.value)}
-            type="date"
-          />
-        </div>
-        <div className="row-item">
-          <div>Payment Plan</div>
-          <input disabled type="text" value={'One time'} />
-        </div>
-        <div className="row-item">
-          <div>Interest</div>
-          <input disabled type="text" value={'1.27%'} />
-        </div>
-        <div className="row-item" style={{ marginTop: '15px' }}>
-          <div>Total Debit Value: {calcDebt(loanAmount)}</div>
-        </div>
-        <Button type="submit" disabled={submitting}>
-          Send Loan Request
+      <Fieldset>
+        <TitleInput
+          value={loanTitle}
+          onChange={setLoanTitle}
+          required
+        />
+      </Fieldset>
+
+      <Fieldset legend="Set your loan details">
+        <Field
+          name="contact"
+          label="Choose a lender"
+          type="text"
+          value={selectedContact.name || ''}
+          onClick={() => {
+            sdk.contacts.selectContact()
+              .then(contact => {
+                if (contact) {
+                  const contactProfile = contact.data.profile
+
+                  if (!contactProfile.ethAddress) {
+                    throw new Error('The selected contact does not have a public ETH address')
+                  } else {
+                    setSelectedContact(contactProfile)
+                  }
+                }
+              })
+              // .catch(error => {
+              //
+              // })
+          }}
+        />
+
+        <Field
+          name="amount"
+          label="Loan amount"
+          type="number"
+          required
+          value={loanAmount}
+          onChange={setLoanAmount}
+        />
+      </Fieldset>
+
+      <Fieldset legend="Set your payback plan">
+        <Field
+          name="plan"
+          label="Payment plan"
+          type="select"
+          required
+          options={[{ id: 0, name: 'One time' }]}
+          value={paymentPlan}
+          onChange={setPaymentPlan}
+        />
+
+        <Field
+          name="interest"
+          label="Interest rate"
+          type="number"
+          required
+          value={interest}
+          onChange={setInterest}
+        />
+
+        <Field
+          name="deadline"
+          label="Payback deadline"
+          type="date"
+          required
+          value={dueDate}
+          onChange={value => setDueDate(value)}
+          placeholder="Select deadline"
+        />
+      </Fieldset>
+
+      <FormActions>
+        <LinkButton to="/">Cancel</LinkButton>
+
+        <Button primary type="submit">
+          Next
         </Button>
+      </FormActions>
+
+      <div className="row-item" style={{ marginTop: '15px' }}>
+        <div>
+          Total Debit Value:{' '}
+          {calculateSimpleInterest(loanAmount, interest)}
+        </div>
       </div>
     </form>
   )
-}
-
-function calcDebt(amount) {
-  const interest = 0.0127
-  const newAmount = amount * (1 + interest)
-  return newAmount
 }
