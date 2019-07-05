@@ -9,7 +9,6 @@ import FormTitle from 'ui/FormTitle'
 import TitleInput from 'ui/TitleInput'
 import LinkButton from 'ui/LinkButton'
 import type { NewLoanData } from 'types'
-import calculateSimpleInterest from 'util/calculateSimpleInterest'
 
 type Props = {
   onSubmit: (data: NewLoanData) => void,
@@ -119,13 +118,6 @@ export default function LoanForm({ onSubmit }: Props) {
           Next
         </Button>
       </FormActions>
-
-      <div className="row-item" style={{ marginTop: '15px' }}>
-        <div>
-          Total Debit Value:{' '}
-          {calculateSimpleInterest(loanAmount, interest)}
-        </div>
-      </div>
     </form>
   )
 }

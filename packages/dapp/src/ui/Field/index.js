@@ -118,12 +118,12 @@ export default function Field(props: Props) {
 }
 
 function createChangeListener(props) {
-  if (!props.onChange) return () => {}
+  if (typeof props.onChange !== 'function') return () => {}
 
   if (props.type === 'number') {
     return (event) => {
       const formatted = formatNumber(event.target.value)
-      props.onChange(formatted)
+      props.onChange && props.onChange(formatted)
     }
   }
 
@@ -131,11 +131,11 @@ function createChangeListener(props) {
 }
 
 function createBlurListener(props) {
-  if (!props.onBlur) return () => {}
+  if (typeof props.onBlur !== 'function') return () => {}
 
   if (props.type === 'number') {
     return () => {
-      if (props.value === '0.00') props.onChange('')
+      if (props.value === '0.00') props.onChange && props.onChange('')
     }
   }
 
@@ -146,7 +146,7 @@ function createKeyPressListener(props) {
   if (props.type === 'number') {
     return (event) => {
       if (event.keyCode === BACKSPACE_CODE && props.value === '0.00') {
-        props.onChange('')
+        props.onChange && props.onChange('')
       }
     }
   }
