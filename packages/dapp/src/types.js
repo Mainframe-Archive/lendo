@@ -2,5 +2,6 @@ export type NewLoanData = {
   dueDate: number,
   selectedContact: string,
   loanName: string,
-  amount: number
+  loanAmount: string,
+  interest: string,
 }

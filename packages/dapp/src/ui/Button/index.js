@@ -1,6 +1,6 @@
 // @flow
 import styled from 'styled-components'
-import { primary, secondary } from 'theme'
+import { primary, secondary, gray } from 'theme'
 
 export default styled.button`
   border: none;
@@ -14,7 +14,7 @@ export default styled.button`
   text-transform: uppercase;
   transition: all 200ms;
   
-  &:hover {
+  &:hover:not(:disabled) {
     cursor: pointer;
     filter: brightness(.9);
   }
@@ -25,5 +25,9 @@ export default styled.button`
   
   &:focus {
     outline: none;
+  }
+  
+  &:disabled {
+    background-color: ${gray};
   }
 `

@@ -8,14 +8,22 @@ import {
 } from 'react-router-dom'
 import GlobalStyles from 'styles'
 import Sidebar from 'ui/Sidebar'
-import { Dashboard, Loaned, Borrowed, Requests, NewLoanSetup } from 'pages'
+import {
+  Dashboard,
+  Loaned,
+  Borrowed,
+  Requests,
+  NewLoanSetup,
+  NewLoanReview,
+} from 'pages'
 
 export default function App() {
   return (
     <Router>
       <GlobalStyles />
       <Switch>
-        <Route exact path="/new-loan" component={NewLoanSetup} />
+        <Route exact path="/new-loan/setup" component={NewLoanSetup} />
+        <Route exact path="/new-loan/review" component={NewLoanReview} />
         <Route>
           <Sidebar />
           <Switch>
