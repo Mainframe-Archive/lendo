@@ -4,11 +4,12 @@ import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { defaultTextColor } from 'theme'
 import triangle from './triangle.svg'
+import LinkButton from '../LinkButton'
 
 const SidebarContainer = styled.aside`
   background-color: #f9f9f9;
   font-size: 1rem;
-  padding: 40px 5px 40px 30px;
+  padding: 20px 5px 20px 30px;
   overflow: none;
   width: 200px;
 
@@ -33,11 +34,20 @@ const SidebarContainer = styled.aside`
       font-weight: bold;
     }
   }
+  
+  .create-loan-btn {
+    display: block;
+    margin-bottom: 50px;
+  }
 `
 
 export default function Sidebar() {
   return (
     <SidebarContainer>
+      <LinkButton to="/new-loan/setup" className="create-loan-btn" primary>
+        Create Loan
+      </LinkButton>
+
       Pages
       <nav>
         <ul>

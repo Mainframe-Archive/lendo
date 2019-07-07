@@ -1,6 +1,8 @@
 // @flow
 import React from 'react'
 import styled from 'styled-components'
+import { format } from 'date-fns'
+import formatNumber from '../../util/formatNumber'
 
 const TableContainer = styled.div`
   background-color: #f9f9f9;
@@ -12,10 +14,10 @@ const PayRow = styled.td`
 
 type Props = {
   loans: Array<any>,
-  loaned: boolean
+  loaned?: boolean
 }
 
-export default function LoansTable({loans, loaned}: Props) {
+export default function LoansTable({loans, loaned = false}: Props) {
   const statusArray = ['pending', 'rolling', 'done']
 
   return (
@@ -38,8 +40,8 @@ export default function LoansTable({loans, loaned}: Props) {
               <td>{loan.name}</td>
               <td>{loan.borrower}</td>
               <td>{loan.lender}</td>
-              <td>{(Date(loan.dueDate))}</td>
-              <td>{loan.amount}</td>
+              <td>{format(loan.dueDate, 'MM/DD/YYYY')}</td>
+              <td>{formatNumber(loan.amount)} DAI</td>
               <td>{statusArray[loan.status]}</td>
               <PayRow>{loaned ? "Accept!" : "Pay Now!"}</PayRow>
             </tr>

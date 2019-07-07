@@ -1,14 +1,15 @@
 // @flow
 import React, { type Node } from 'react'
 import styled from 'styled-components'
+import { primary } from 'theme'
 
 type Props = {
-  children: Node,
+  children?: Node,
   title: Node
 }
 
 const HeaderContainer = styled.header`
-  border-bottom: 1px solid #232323;
+  border-bottom: 1px solid ${primary};
   font-size: 2rem;
   font-weight: bold;
   padding: 13px 18px 13px 35px;

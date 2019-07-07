@@ -6,44 +6,24 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom'
-
-import { createGlobalStyle } from 'styled-components'
-
+import GlobalStyles from 'styles'
 import Sidebar from 'ui/Sidebar'
+import {
+  Dashboard,
+  Loaned,
+  Borrowed,
+  Requests,
+  NewLoanSetup,
+  NewLoanReview,
+} from 'pages'
 
-import { Dashboard, Loaned, Borrowed, Requests, NewLoan } from 'pages'
-
-import { defaultFontFamily, defaultFontSize, defaultTextColor } from 'theme'
-
-const GlobalStyles = createGlobalStyle`
-  html {
-    font-size: ${defaultFontSize};
-  }
-
-  body {
-    background-color: white;
-    margin: 0;
-    font-family: ${defaultFontFamily};
-    color: ${defaultTextColor};
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  #root {
-    display: flex;
-    height: 100vh;
-  }
-`
 export default function App() {
   return (
     <Router>
       <GlobalStyles />
       <Switch>
-        <Route exact path="/new-loan" component={NewLoan} />
+        <Route exact path="/new-loan/setup" component={NewLoanSetup} />
+        <Route exact path="/new-loan/review" component={NewLoanReview} />
         <Route>
           <Sidebar />
           <Switch>
