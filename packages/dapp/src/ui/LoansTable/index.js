@@ -14,10 +14,15 @@ const PayRow = styled.td`
 
 type Props = {
   loans: Array<any>,
-  loaned?: boolean
+  loaned?: boolean,
+  onAccept?: (loan: any, key: number) => void,
 }
 
-export default function LoansTable({loans, loaned = false}: Props) {
+export default function LoansTable({
+  loans,
+  loaned = false,
+  onAccept = () => {},
+}: Props) {
   const statusArray = ['pending', 'rolling', 'done']
 
   return (
@@ -43,7 +48,9 @@ export default function LoansTable({loans, loaned = false}: Props) {
               <td>{format(loan.dueDate, 'MM/DD/YYYY')}</td>
               <td>{formatNumber(loan.amount)} DAI</td>
               <td>{statusArray[loan.status]}</td>
-              <PayRow>{loaned ? "Accept!" : "Pay Now!"}</PayRow>
+              <PayRow onClick={() => onAccept(loan, key)}>
+                {loaned ? 'Accept!' : 'Pay Now!'}
+              </PayRow>
             </tr>
           ))}
         </tbody>

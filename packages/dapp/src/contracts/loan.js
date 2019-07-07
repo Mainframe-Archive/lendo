@@ -1,6 +1,7 @@
-export const contractAddress = '0xb0a17D694D56A3E355c735EF4CBA3f360973AFdc'
+//kovan address
+export const loanAddress = '0x94c4Af75E369abAc2d07F472c0f0D500569eBB9D'
 
-export const abi = [
+export const loanAbi = [
   {
     constant: true,
     inputs: [],
