@@ -23,7 +23,7 @@ export function useOwnAccount() {
   return ownAccount
 }
 
-export function useBorrowerLoans(borrowerAddress) {
+export function useBorrowedLoans(borrowerAddress) {
   const [loans, setLoans] = useState([])
 
   useEffect(() => {
