@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import MainframeSDK from '@mainframe/sdk'
 import Web3 from 'web3'
 import { abi, contractAddress } from 'abi'
-import type { NewLoanData } from 'types'
+import type { LoanData, NewLoanData } from 'types'
 import { toIntString } from 'util/formatNumber'
 
 export const sdk = new MainframeSDK()
@@ -23,7 +23,7 @@ export function useOwnAccount() {
   return ownAccount
 }
 
-export function useBorrowedLoans(borrowerAddress) {
+export function useBorrowedLoans(borrowerAddress): Array<LoanData> {
   const [loans, setLoans] = useState([])
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function useBorrowedLoans(borrowerAddress) {
   return loans
 }
 
-export function useLendedLoans(lenderAddress) {
+export function useLendedLoans(lenderAddress): Array<LoanData> {
   const [loans, setLoans] = useState([])
 
   useEffect(() => {
