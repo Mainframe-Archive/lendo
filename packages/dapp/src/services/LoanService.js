@@ -34,7 +34,7 @@ export function requestLoan(
 
   return loanContract.methods
     .requestLoan(
-      '0x4d9ef50a0389b09315b2946031493548a0ad5db5',
+      data.selectedContact.ethAddress,
       data.loanName,
       parseInt(toIntString(data.loanAmount)),
       new Date(data.dueDate).getTime() / 1000,
@@ -42,7 +42,7 @@ export function requestLoan(
     .send({ from: senderAddress })
 }
 
-export async function approveDAITransfer(
+export function approveDAITransfer(
   loan: LoanData,
   senderAddress: Address,
 ): Promise<void> {
@@ -56,7 +56,7 @@ export async function approveDAITransfer(
     .send({ from: senderAddress })
 }
 
-export async function approveLoan(
+export function approveLoan(
   index: number,
   senderAddress: Address,
 ): Promise<void> {
