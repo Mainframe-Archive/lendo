@@ -1,11 +1,11 @@
 {
   "contracts": {
     "Loan": {
-      "address": "0x55e78126AcF5aa44a3CDbECaF2cA881179C81bFd",
-      "constructorCode": "608060405234801561001057600080fd5b50611767806100206000396000f3fe",
-      "bodyBytecodeHash": "500b6fef3a4bea2e928d36f176af77fe9645152006cbfcc895ddc06ef52b1672",
-      "localBytecodeHash": "95ed0fe2b587822cd1f61875fa4387eb075c462f6c051aed68a5cbaac9270620",
-      "deployedBytecodeHash": "95ed0fe2b587822cd1f61875fa4387eb075c462f6c051aed68a5cbaac9270620",
+      "address": "0x55b7bE156C656D332EDea30b5Bf2Ea9cAb1a4C50",
+      "constructorCode": "608060405234801561001057600080fd5b5061161f806100206000396000f3fe",
+      "bodyBytecodeHash": "fa8350583fc997c4ad64cca8a17a150637fa4b2ba6f877c6be29be8854afe0f0",
+      "localBytecodeHash": "0a5f6862e0b978fa0b6e6d29178b7b27f7fc3dcf73707527f2e4021d4b2130ef",
+      "deployedBytecodeHash": "0a5f6862e0b978fa0b6e6d29178b7b27f7fc3dcf73707527f2e4021d4b2130ef",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -113,7 +113,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 378,
+          "astId": 363,
           "type": "t_bool",
           "src": "757:24:2"
         },
@@ -121,7 +121,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 380,
+          "astId": 365,
           "type": "t_bool",
           "src": "876:25:2"
         },
@@ -129,7 +129,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 436,
+          "astId": 421,
           "type": "t_array:50<t_uint256>",
           "src": "1951:29:2"
         },
@@ -179,7 +179,18 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [
+          {
+            "contract": "Loan",
+            "path": "contracts/Loan.sol",
+            "label": "loans",
+            "astId": 39,
+            "type": "t_array:dyn<t_struct<Loan.LoanData>>",
+            "src": "894:23:0"
+          }
+        ],
+        "storageDiff": []
       }
     }
   },
@@ -190,6 +201,12 @@
         "address": "0xb0a17D694D56A3E355c735EF4CBA3f360973AFdc",
         "version": "0.1.0",
         "implementation": "0x55e78126AcF5aa44a3CDbECaF2cA881179C81bFd"
+      },
+      {
+        "address": "0x6Cd759C10578c8835df450f2AA21C620d16b57fB",
+        "version": "0.1.0",
+        "implementation": "0x55b7bE156C656D332EDea30b5Bf2Ea9cAb1a4C50",
+        "admin": "0x3DAFAA2Cd4C35F54750D57a18a0163e2165Bf794"
       }
     ]
   },
