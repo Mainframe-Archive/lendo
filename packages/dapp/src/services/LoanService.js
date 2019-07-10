@@ -1,19 +1,43 @@
 import { useState, useEffect } from 'react'
 import MainframeSDK from '@mainframe/sdk'
 import Web3 from 'web3'
-import { loanAbi, loanAddress } from 'contracts/loan'
+import { loanAbi, getLoanAddress } from 'contracts/loan'
 import { erc20Abi, erc20Address } from 'contracts/erc20'
 import type { NewLoanData } from 'types'
 import { toIntString } from 'util/formatNumber'
 
 export const sdk = new MainframeSDK()
 export const web3 = new Web3(sdk.ethereum.web3Provider)
-export const loanContract = new web3.eth.Contract(loanAbi, loanAddress)
+// export const loanContract = new web3.eth.Contract(loanAbi, loanAddress)
 export const erc20Contract = new web3.eth.Contract(erc20Abi, erc20Address)
+
+export function getLoanContract(networkVersion) {
+  return new web3.eth.Contract(loanAbi, getLoanAddress(networkVersion))
+}
 
 export function getOwnAccount() {
   return sdk.ethereum.getDefaultAccount()
 }
+
+export function getNetworkVersion() {
+  return sdk.ethereum.getNetworkVersion()
+}
+
+export function useNetworkVersion() {
+  const [networkVersion, setNetworkVersion] = useState()
+
+  useEffect(() => {
+    getNetworkVersion().then(setNetworkVersion)
+    sdk.ethereum.on('networkChanged', accounts => {
+      getNetworkVersion().then(setNetworkVersion)
+    })
+
+  }, [])
+
+  return networkVersion
+}
+
+
 
 export function useOwnAccount() {
   const [ownAccount, setOwnAccount] = useState()
@@ -27,6 +51,8 @@ export function useOwnAccount() {
 
 export function useBorrowerLoans(borrowerAddress) {
   const [loans, setLoans] = useState([])
+  const networkVersion = useNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
 
   useEffect(() => {
     const getLoansByBorrower_ = async () => {
@@ -59,6 +85,8 @@ export function useBorrowerLoans(borrowerAddress) {
 
 export function useLendedLoans(lenderAddress) {
   const [loans, setLoans] = useState([])
+  const networkVersion = useNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
 
   useEffect(() => {
     const getLoansByLender_ = async () => {
@@ -91,6 +119,9 @@ export function useLendedLoans(lenderAddress) {
 }
 
 export function requestLoan(data: NewLoanData): Promise<void> {
+  const networkVersion = useNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
   return loanContract.methods.requestLoan(
     data.selectedContact.ethAddress,
     data.loanName,

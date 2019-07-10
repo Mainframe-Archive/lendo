@@ -1,5 +1,16 @@
 //kovan address
-export const loanAddress = '0x94c4Af75E369abAc2d07F472c0f0D500569eBB9D'
+export function getLoanAddress(networkVersion) {
+  switch (networkVersion) {
+    case 'local':
+      return '0x2B922547600E3822F1f8f893274B7ECD4A75a54D'
+    case '42':
+      return '0x6Cd759C10578c8835df450f2AA21C620d16b57fB'
+    case '1':
+      return ''
+    default:
+      return ''
+  }
+}
 
 export const loanAbi = [
   {
