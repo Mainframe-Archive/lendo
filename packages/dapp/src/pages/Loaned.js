@@ -16,14 +16,10 @@ export default function Loaned() {
   const ownAccount = useOwnAccount()
   const lendedLoans = useLendedLoans(ownAccount)
 
-  async function acceptLoan(loan, index) {
+  function acceptLoan(loan, index) {
     console.log('loan', loan)
     console.log('key', index)
     console.log('Number(loan.amount)', Number(loan.amount))
-
-    console.log(
-      'approving contract Address - 3rd party to make a transfer in my name',
-    )
 
     approveDAITransfer(loan, ownAccount)
       .then(() => {

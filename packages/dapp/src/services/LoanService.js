@@ -1,24 +1,37 @@
 import { useState, useEffect } from 'react'
 import MainframeSDK from '@mainframe/sdk'
 import Web3 from 'web3'
-import { loanAbi, loanContractAddress } from 'contracts/loan'
-import { erc20Abi, DAIContractAddress } from 'contracts/erc20'
+import { loanAbi, getLoanContractAddress } from 'contracts/loan'
+import { erc20Abi, getDaiContractAddress } from 'contracts/erc20'
 import type { Address, LoanData, NewLoanData } from 'types'
 import { toIntString } from 'util/formatNumber'
 
 export const sdk = new MainframeSDK()
 export const web3 = new Web3(sdk.ethereum.web3Provider)
-export const loanContract = new web3.eth.Contract(loanAbi, loanContractAddress)
-export const DAIContract = new web3.eth.Contract(erc20Abi, DAIContractAddress)
+
+export function getLoanContract(networkVersion) {
+  return new web3.eth.Contract(loanAbi, getLoanContractAddress(networkVersion))
+}
+
+export function getDAIContract(networkVersion) {
+  return new web3.eth.Contract(erc20Abi, getDaiContractAddress(networkVersion))
+}
 
 export function getOwnAccount(): Promise<Address> {
   return sdk.ethereum.getDefaultAccount()
+}
+
+export function getNetworkVersion() {
+  return sdk.ethereum.networkVersion
 }
 
 export function requestLoan(
   data: NewLoanData,
   senderAddress: Address,
 ): Promise<void> {
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
   return loanContract.methods
     .requestLoan(
       data.selectedContact.ethAddress,
@@ -33,6 +46,11 @@ export function approveDAITransfer(
   loan: LoanData,
   senderAddress: Address,
 ): Promise<void> {
+
+  const networkVersion = getNetworkVersion()
+  const DAIContract = getDAIContract(networkVersion)
+  const loanContractAddress = getLoanContractAddress(networkVersion)
+
   return DAIContract.methods
     .approve(loanContractAddress, Number(loan.amount))
     .send({ from: senderAddress })
@@ -42,6 +60,10 @@ export function approveLoan(
   index: number,
   senderAddress: Address,
 ): Promise<void> {
+
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
   return loanContract.methods.approveLoan(index).send({ from: senderAddress })
 }
 
@@ -57,6 +79,8 @@ export function useOwnAccount(): Address | null {
 
 export function useBorrowedLoans(borrowerAddress: Address): Array<LoanData> {
   const [loans, setLoans] = useState([])
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
 
   useEffect(() => {
     const getLoansByBorrower_ = async () => {
@@ -82,13 +106,16 @@ export function useBorrowedLoans(borrowerAddress: Address): Array<LoanData> {
       }
     }
     if (borrowerAddress) getLoansByBorrower_()
-  }, [borrowerAddress])
+    // eslint-disable-next-line
+  }, [borrowerAddress, networkVersion])
 
   return loans
 }
 
 export function useLendedLoans(lenderAddress: Address): Array<LoanData> {
   const [loans, setLoans] = useState([])
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
 
   useEffect(() => {
     const getLoansByLender_ = async () => {
@@ -115,7 +142,8 @@ export function useLendedLoans(lenderAddress: Address): Array<LoanData> {
     }
 
     if (lenderAddress) getLoansByLender_()
-  }, [lenderAddress])
+    // eslint-disable-next-line
+  }, [lenderAddress, networkVersion])
 
   return loans
 }
