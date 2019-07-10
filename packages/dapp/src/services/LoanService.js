@@ -11,7 +11,7 @@ export const web3 = new Web3(sdk.ethereum.web3Provider)
 export const loanContract = new web3.eth.Contract(loanAbi, loanContractAddress)
 export const DAIContract = new web3.eth.Contract(erc20Abi, DAIContractAddress)
 
-export function getOwnAccount(): Address {
+export function getOwnAccount(): Promise<Address> {
   return sdk.ethereum.getDefaultAccount()
 }
 
@@ -78,7 +78,7 @@ export function useBorrowedLoans(borrowerAddress: Address): Array<LoanData> {
         }
         setLoans(newLoans)
       } catch (err) {
-        console.log('err', err)
+        console.error(err)
       }
     }
     if (borrowerAddress) getLoansByBorrower_()
@@ -110,7 +110,7 @@ export function useLendedLoans(lenderAddress: Address): Array<LoanData> {
         }
         setLoans(newLoans)
       } catch (err) {
-        console.log('err', err)
+        console.error(err)
       }
     }
 
