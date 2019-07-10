@@ -1,22 +1,52 @@
 import { useState, useEffect } from 'react'
 import MainframeSDK from '@mainframe/sdk'
 import Web3 from 'web3'
-import { loanAbi, loanAddress } from 'contracts/loan'
-import { erc20Abi, erc20Address } from 'contracts/erc20'
-import type { NewLoanData } from 'types'
+import { loanAbi, loanContractAddress } from 'contracts/loan'
+import { erc20Abi, DAIContractAddress } from 'contracts/erc20'
+import type { Address, LoanData, NewLoanData } from 'types'
 import { toIntString } from 'util/formatNumber'
 
 export const sdk = new MainframeSDK()
 export const web3 = new Web3(sdk.ethereum.web3Provider)
-export const loanContract = new web3.eth.Contract(loanAbi, loanAddress)
-export const erc20Contract = new web3.eth.Contract(erc20Abi, erc20Address)
+export const loanContract = new web3.eth.Contract(loanAbi, loanContractAddress)
+export const DAIContract = new web3.eth.Contract(erc20Abi, DAIContractAddress)
 
-export function getOwnAccount() {
+export function getOwnAccount(): Promise<Address> {
   return sdk.ethereum.getDefaultAccount()
 }
 
-export function useOwnAccount() {
-  const [ownAccount, setOwnAccount] = useState()
+export function requestLoan(
+  data: NewLoanData,
+  senderAddress: Address,
+): Promise<void> {
+  return loanContract.methods
+    .requestLoan(
+      data.selectedContact.ethAddress,
+      data.loanName,
+      parseInt(toIntString(data.loanAmount)),
+      new Date(data.dueDate).getTime() / 1000,
+    )
+    .send({ from: senderAddress })
+}
+
+export function approveDAITransfer(
+  loan: LoanData,
+  senderAddress: Address,
+): Promise<void> {
+  return DAIContract.methods
+    .approve(loanContractAddress, Number(loan.amount))
+    .send({ from: senderAddress })
+}
+
+export function approveLoan(
+  index: number,
+  senderAddress: Address,
+): Promise<void> {
+  return loanContract.methods.approveLoan(index).send({ from: senderAddress })
+}
+
+export function useOwnAccount(): Address | null {
+  const [ownAccount, setOwnAccount] = useState(null)
 
   useEffect(() => {
     getOwnAccount().then(setOwnAccount)
@@ -25,7 +55,7 @@ export function useOwnAccount() {
   return ownAccount
 }
 
-export function useBorrowerLoans(borrowerAddress) {
+export function useBorrowedLoans(borrowerAddress: Address): Array<LoanData> {
   const [loans, setLoans] = useState([])
 
   useEffect(() => {
@@ -48,7 +78,7 @@ export function useBorrowerLoans(borrowerAddress) {
         }
         setLoans(newLoans)
       } catch (err) {
-        console.log('err', err)
+        console.error(err)
       }
     }
     if (borrowerAddress) getLoansByBorrower_()
@@ -57,7 +87,7 @@ export function useBorrowerLoans(borrowerAddress) {
   return loans
 }
 
-export function useLendedLoans(lenderAddress) {
+export function useLendedLoans(lenderAddress: Address): Array<LoanData> {
   const [loans, setLoans] = useState([])
 
   useEffect(() => {
@@ -80,7 +110,7 @@ export function useLendedLoans(lenderAddress) {
         }
         setLoans(newLoans)
       } catch (err) {
-        console.log('err', err)
+        console.error(err)
       }
     }
 
@@ -88,13 +118,4 @@ export function useLendedLoans(lenderAddress) {
   }, [lenderAddress])
 
   return loans
-}
-
-export function requestLoan(data: NewLoanData): Promise<void> {
-  return loanContract.methods.requestLoan(
-    data.selectedContact.ethAddress,
-    data.loanName,
-    parseInt(toIntString(data.loanAmount)),
-    new Date(data.dueDate).getTime() / 1000,
-  )
 }

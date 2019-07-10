@@ -1,5 +1,5 @@
 //kovan address
-export const erc20Address = '0x31e36f17c34B500523cFA592ae25081D70dFEad4'
+export const DAIContractAddress = '0x31e36f17c34B500523cFA592ae25081D70dFEad4'
 
 export const erc20Abi = [
   {

@@ -1,11 +1,11 @@
 //kovan address
-export const loanAddress = '0x94c4Af75E369abAc2d07F472c0f0D500569eBB9D'
+export const loanContractAddress = '0x94c4Af75E369abAc2d07F472c0f0D500569eBB9D'
 
 export const loanAbi = [
   {
     constant: true,
     inputs: [],
-    name: 'erc20Address',
+    name: 'DAIContractAddress',
     outputs: [
       {
         name: '',
