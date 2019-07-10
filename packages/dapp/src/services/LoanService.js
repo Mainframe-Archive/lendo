@@ -29,7 +29,7 @@ export function requestLoan(
   data: NewLoanData,
   senderAddress: Address,
 ): Promise<void> {
-  const networkVersion = sdk.ethereum.networkVersion
+  const networkVersion = getNetworkVersion()
   const loanContract = getLoanContract(networkVersion)
 
   return loanContract.methods
@@ -47,7 +47,7 @@ export function approveDAITransfer(
   senderAddress: Address,
 ): Promise<void> {
 
-  const networkVersion = sdk.ethereum.networkVersion
+  const networkVersion = getNetworkVersion()
   const DAIContract = getDAIContract(networkVersion)
   const loanContractAddress = getLoanContractAddress(networkVersion)
 
@@ -61,7 +61,7 @@ export function approveLoan(
   senderAddress: Address,
 ): Promise<void> {
 
-  const networkVersion = sdk.ethereum.networkVersion
+  const networkVersion = getNetworkVersion()
   const loanContract = getLoanContract(networkVersion)
 
   return loanContract.methods.approveLoan(index).send({ from: senderAddress })
