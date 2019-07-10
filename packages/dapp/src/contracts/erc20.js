@@ -1,5 +1,16 @@
 //kovan address
-export const DAIContractAddress = '0x31e36f17c34B500523cFA592ae25081D70dFEad4'
+export function getDaiContractAddress(network) {
+  switch (network) {
+    case 'local':
+      return '0xEB581fAAE60609aE261Ed53927331Ee83a8d3Ede'
+    case '42':
+      return '0xC4375B7De8af5a38a93548eb8453a498222C4fF2'
+    case '1':
+      return ''
+    default:
+      return '0xEB581fAAE60609aE261Ed53927331Ee83a8d3Ede'
+  }
+}
 
 export const erc20Abi = [
   {
