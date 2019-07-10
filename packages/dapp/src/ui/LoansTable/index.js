@@ -25,6 +25,13 @@ export default function LoansTable({
 }: Props) {
   const statusArray = ['pending', 'rolling', 'done']
 
+  const returnStatus = (loaned, status) => {
+    if (loaned && status === 'pending') return "Accept!"
+    if (loaned && status === 'rolling') return ""
+    if (loaned && status === 'done') return ""
+    else return "Pay Now!"
+  }
+
   return (
     <TableContainer>
       <table>
@@ -49,7 +56,7 @@ export default function LoansTable({
               <td>{formatNumber(loan.amount)} DAI</td>
               <td>{statusArray[loan.status]}</td>
               <PayRow onClick={() => onAccept(loan, key)}>
-                {loaned ? 'Accept!' : 'Pay Now!'}
+                {returnStatus(loaned, statusArray[loan.status])}}
               </PayRow>
             </tr>
           ))}
