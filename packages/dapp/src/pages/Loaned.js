@@ -1,44 +1,78 @@
 // @flow
 import React from 'react'
-import LoansTable from 'ui/LoansTable'
+import {
+  approveDAITransfer,
+  approveLoan,
+  useLendedLoans,
+  useOwnAccount,
+} from 'services/LoanService'
 import Layout from 'ui/Layouts/default'
-
-import { useLendedLoans, useOwnAccount, loanContract, erc20Contract } from 'services/LoanService'
-import { loanAddress } from 'contracts/loan'
+import LoanStatus from 'ui/LoanStatus'
+import formatNumber from 'util/formatNumber'
+import { Link } from 'react-router-dom'
+import Table from 'ui/Table'
 
 export default function Loaned() {
   const ownAccount = useOwnAccount()
-  const loans = useLendedLoans(ownAccount)
+  const lendedLoans = useLendedLoans(ownAccount)
 
-  function acceptLoan(loan, index) {
+  async function acceptLoan(loan, index) {
     console.log('loan', loan)
     console.log('key', index)
     console.log('Number(loan.amount)', Number(loan.amount))
 
-    erc20Contract.methods
-      .approve(loanAddress, Number(loan.amount))
-      .send({ from: ownAccount })
-      .then(e => {
-        console.log('approving contract Address - 3rd party to make a transfer in my name')
-        console.log(e)
-        loanContract.methods
-          .approveLoan(index)
-          .send({ from: ownAccount })
-          .then(e => {
-            console.log('finish both contracts successfully')
-          })
+    console.log(
+      'approving contract Address - 3rd party to make a transfer in my name',
+    )
+
+    approveDAITransfer(loan, ownAccount)
+      .then(() => {
+        console.log('dai transfer approved!')
+        return approveLoan(index, ownAccount)
+      })
+      .then(() => {
+        console.log('finished both contracts successfully')
       })
       .catch(error => {
         console.log('error', error)
-      })
-      .finally(() => {
-        console.log('finally')
       })
   }
 
   return (
     <Layout title="Loaned">
-      <LoansTable loans={loans} onAccept={acceptLoan} loaned />
+      <Table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Name</th>
+            <th>Borrower</th>
+            <th>Amount</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {lendedLoans.map((loan, key) => (
+            <tr key={key}>
+              <td>
+                <LoanStatus code={loan.status} />
+              </td>
+              <td>{loan.name}</td>
+              <td>{loan.borrower}</td>
+              <td>{formatNumber(loan.amount)} DAI</td>
+              <td>
+                <Link
+                  to="/"
+                  onClick={event => {
+                    event.preventDefault()
+                    acceptLoan(loan, key)
+                  }}>
+                  See loan
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </Layout>
   )
 }
