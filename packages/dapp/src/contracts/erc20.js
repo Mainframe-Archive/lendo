@@ -12,8 +12,6 @@ export function getDaiAddress(network) {
   }
 }
 
-export const erc20Address = '0xC4375B7De8af5a38a93548eb8453a498222C4fF2'
-
 export const erc20Abi = [
   {
     constant: true,

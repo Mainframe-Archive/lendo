@@ -16,7 +16,7 @@ export const loanAbi = [
   {
     constant: true,
     inputs: [],
-    name: 'erc20Address',
+    name: 'DAIContractAddress',
     outputs: [
       {
         name: '',

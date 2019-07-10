@@ -55,8 +55,7 @@ export default function NewLoanReview({ history, location }: Props) {
   const submitLoan = () => {
     setIsLoading(true)
 
-    requestLoan(loanData)
-      .send({ from: ownAccount })
+    requestLoan(loanData, ownAccount)
       .then(() => {
         history.push('/')
       })
