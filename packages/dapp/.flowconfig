@@ -9,6 +9,7 @@
 
 [options]
 module.name_mapper='^react-native$' -> 'react-native-web'
+module.name_mapper='^contracts\(.*\)$' -> '<PROJECT_ROOT>/src/contracts/\1'
 module.name_mapper='^pages\(.*\)$' -> '<PROJECT_ROOT>/src/pages/\1'
 module.name_mapper='^services\(.*\)$' -> '<PROJECT_ROOT>/src/services/\1'
 module.name_mapper='^ui\(.*\)$' -> '<PROJECT_ROOT>/src/ui/\1'

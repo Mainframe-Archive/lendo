@@ -104,7 +104,6 @@ contract Loan is Initializable {
     // Check if the lender has previously approved this contract to spend
     // the necessary amount of tokens
     IERC20 dai = IERC20(erc20Address);
-    require(dai.allowance(msg.sender, address(this)) >= loan.amount, "Cannot spend required amount of DAI on behalf of caller");
 
     require(dai.transferFrom(msg.sender, loan.borrower, loan.amount), "Could not transfer tokens to the borrower");
     loan.status = LoanStatuses.Approved;
