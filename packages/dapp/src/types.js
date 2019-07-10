@@ -13,10 +13,10 @@ export type NewLoanData = {
 
 export type LoanData = {
   name: string,
-  amount: string,
-  dueDate: string,
+  amount: number,
+  dueDate: number,
   lender: Address,
   borrower: Address,
-  status: string,
+  status: number,
+  interest: number,
 }
-

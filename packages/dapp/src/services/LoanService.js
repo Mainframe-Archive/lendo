@@ -112,6 +112,26 @@ export function useBorrowedLoans(borrowerAddress: Address): Array<LoanData> {
   return loans
 }
 
+export function useBorrowedLoanById(
+  borrowerAddress: Address,
+  index: number,
+): LoanData | null {
+  const [loan, setLoan] = useState(null)
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
+  useEffect(() => {
+    loanContract.methods
+      .loansByBorrower(borrowerAddress, index)
+      .call()
+      .then(loanIndex => loanContract.methods.loans(loanIndex).call())
+      .then(setLoan)
+    // eslint-disable-next-line
+  }, [borrowerAddress, index, networkVersion])
+
+  return loan
+}
+
 export function useLendedLoans(lenderAddress: Address): Array<LoanData> {
   const [loans, setLoans] = useState([])
   const networkVersion = getNetworkVersion()
@@ -146,4 +166,23 @@ export function useLendedLoans(lenderAddress: Address): Array<LoanData> {
   }, [lenderAddress, networkVersion])
 
   return loans
+}
+
+export function useLendedLoanById(
+  lenderAddress: Address,
+  index: number,
+): LoanData | null {
+  const [loan, setLoan] = useState(null)
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
+  useEffect(() => {
+    loanContract.methods
+      .loansByLender(lenderAddress, index)
+      .call()
+      .then(loanIndex => loanContract.methods.loans(loanIndex).call())
+      .then(setLoan)
+  }, [lenderAddress, index, networkVersion, loanContract.methods])
+
+  return loan
 }

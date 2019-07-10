@@ -33,7 +33,7 @@ export default function Borrowed() {
               <td>{loan.lender}</td>
               <td>{formatNumber(loan.amount)} DAI</td>
               <td>
-                <Link to="/">Pay now</Link>
+                <Link to={`/view-contract/borrowed/${key}`}>View contract</Link>
               </td>
             </tr>
           ))}

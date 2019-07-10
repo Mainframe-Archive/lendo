@@ -1,11 +1,6 @@
 // @flow
 import React from 'react'
-import {
-  approveDAITransfer,
-  approveLoan,
-  useLendedLoans,
-  useOwnAccount,
-} from 'services/LoanService'
+import { useOwnAccount, useLendedLoans } from 'services/LoanService'
 import Layout from 'ui/Layouts/default'
 import LoanStatus from 'ui/LoanStatus'
 import formatNumber from 'util/formatNumber'
@@ -15,24 +10,6 @@ import Table from 'ui/Table'
 export default function Loaned() {
   const ownAccount = useOwnAccount()
   const lendedLoans = useLendedLoans(ownAccount)
-
-  function acceptLoan(loan, index) {
-    console.log('loan', loan)
-    console.log('key', index)
-    console.log('Number(loan.amount)', Number(loan.amount))
-
-    approveDAITransfer(loan, ownAccount)
-      .then(() => {
-        console.log('dai transfer approved!')
-        return approveLoan(index, ownAccount)
-      })
-      .then(() => {
-        console.log('finished both contracts successfully')
-      })
-      .catch(error => {
-        console.log('error', error)
-      })
-  }
 
   return (
     <Layout title="Loaned">
@@ -56,14 +33,7 @@ export default function Loaned() {
               <td>{loan.borrower}</td>
               <td>{formatNumber(loan.amount)} DAI</td>
               <td>
-                <Link
-                  to="/"
-                  onClick={event => {
-                    event.preventDefault()
-                    acceptLoan(loan, key)
-                  }}>
-                  See loan
-                </Link>
+                <Link to={`/view-contract/lended/${key}`}>View contract</Link>
               </td>
             </tr>
           ))}

@@ -1,26 +1,105 @@
 // @flow
-import React from 'react'
+import React, { useState } from 'react'
 import Layout from 'ui/Layouts/default'
+import Button from 'ui/Button'
+import Fieldset from 'ui/Fieldset'
+import FormActions from 'ui/FormActions'
 import FormContainer from 'ui/FormContainer'
 import FormTitle from 'ui/FormTitle'
-import Fieldset from 'ui/Fieldset'
-import { format } from 'date-fns'
-import { useLendedLoanById, useOwnAccount } from '../services/LoanService'
+import LinkButton from 'ui/LinkButton'
+import { Column, Row } from '@morpheus-ui/core'
+import {
+  approveDAITransfer,
+  approveLoan,
+  useLendedLoanById,
+  useOwnAccount,
+} from 'services/LoanService'
 import type { LoanData } from 'types'
+import styled from 'styled-components'
+import formatNumber from 'util/formatNumber'
+import calculateSimpleInterest from 'util/calculateSimpleInterest'
+import { format } from 'date-fns'
+
+const EthAddress = styled.span`
+  word-break: break-all;
+
+  h3 {
+    margin-bottom: 0;
+  }
+
+  p {
+    margin: 8px 0;
+  }
+`
 
 const humanReadableDate = (date: Date): string => format(date, 'MM/DD/YYYY')
 
-export default function ViewContract({ match }) {
+type Props = {
+  match: any,
+  history: any,
+}
+
+export default function ViewContract({ match, history }: Props) {
   const loanIndex = match.params.loanId
+  const ownName = 'Satoshi Nakamoto'
+  const borrowerName = 'Nick Szabo'
   const ownAccount = useOwnAccount()
-  // const loanData: LoanData = useLendedLoanById(ownAccount, loanIndex)
-  const loanData: LoanData = {
-    name: 'Eu quero café',
-    amount: 10000,
-    dueDate: 1562986800,
-    lender: '0x440f05c6e359e3a4ab8765e492d9ae2d66c913b4',
-    borrower: '0xe3f0d0ecfd7f655f322a05d15c996748ad945561',
-    status: 1,
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const loanData: LoanData = useLendedLoanById(ownAccount, loanIndex)
+  // TODO: interest should be read from smart contract
+  loanData.interest = 1500
+
+  const totalDebit = calculateSimpleInterest(
+    loanData.amount,
+    loanData.interest,
+  ).toFixed(2)
+
+  function acceptLoan(loan: LoanData, index) {
+    setIsLoading(true)
+    setError(null)
+
+    approveDAITransfer(loan, ownAccount)
+      .then(() => {
+        console.log('dai transfer approved!')
+        return approveLoan(index, ownAccount)
+      })
+      .then(() => {
+        console.log('finished both contracts successfully')
+        history.push('/loaned')
+      })
+      .catch(error => {
+        setError(error)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }
+
+  if (isLoading) {
+    return (
+      <Layout title="Approving contract">
+        <h1>Loading</h1>
+      </Layout>
+    )
+  }
+
+  if (error) {
+    return (
+      <Layout title="Error">
+        <FormContainer>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+
+          <FormActions>
+            <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
+              Retry
+            </Button>
+
+            <LinkButton to="/new-loan/setup">Review Terms</LinkButton>
+          </FormActions>
+        </FormContainer>
+      </Layout>
+    )
   }
 
   return (
@@ -35,9 +114,55 @@ export default function ViewContract({ match }) {
             <p>
               This contract is entered into by and between the below named
               parties [Lender and Borrower.] This loan will expire at the close
-              of the business on {humanReadableDate(loanData.dueDate * 1000)}.
+              of the business on {humanReadableDate(loanData.dueDate)}.
+            </p>
+
+            <Row size={2}>
+              <Column>
+                <EthAddress>
+                  <h3>"Lender"</h3>
+                  <p>{ownName}</p>
+                  <p>{loanData.lender}</p>
+                </EthAddress>
+              </Column>
+
+              <Column>
+                <EthAddress>
+                  <h3>"Borrower"</h3>
+                  <p>{borrowerName}</p>
+                  <p>{loanData.borrower}</p>
+                </EthAddress>
+              </Column>
+            </Row>
+          </Fieldset>
+
+          <Fieldset legend="Loan terms">
+            <p>
+              {ownName} agrees to loan {borrowerName}{' '}
+              <strong>{formatNumber(loanData.amount)} DAI</strong> upon signing
+              this contract. {borrowerName} agrees to pay {ownName} back loan
+              amount plus APR of{' '}
+              <strong>{formatNumber(loanData.interest)}%</strong>. The total
+              payback amount is <strong>{formatNumber(totalDebit)} DAI</strong>{' '}
+              due on {humanReadableDate(loanData.dueDate)}.
             </p>
           </Fieldset>
+
+          <Fieldset legend="Signatures">
+            <p>
+              By signing, you agree that you have read and agree to the loan
+              terms set above. Upon signing, the loan will be automatically sent
+              to {borrowerName} at address <strong>{loanData.borrower}</strong>.
+            </p>
+          </Fieldset>
+
+          <FormActions>
+            <LinkButton to="/loaned">Cancel</LinkButton>
+
+            <Button primary onClick={() => acceptLoan(loanData, loanIndex)}>
+              Sign & Send
+            </Button>
+          </FormActions>
         </div>
       </FormContainer>
     </Layout>

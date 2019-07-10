@@ -36,6 +36,7 @@ const EthAddress = styled.span`
 const humanReadableDate = (date: Date): string => format(date, 'MM/DD/YYYY')
 
 export default function NewLoanReview({ history, location }: Props) {
+  const ownName = 'Satoshi Nakamoto'
   const ownAccount = useOwnAccount()
   const [accepted, setAccepted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -47,7 +48,6 @@ export default function NewLoanReview({ history, location }: Props) {
     return null
   }
 
-  const ownName = 'Guilherme'
   const totalDebit = calculateSimpleInterest(
     loanData.loanAmount,
     loanData.interest,
