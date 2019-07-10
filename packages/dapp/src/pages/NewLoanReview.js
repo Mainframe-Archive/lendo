@@ -115,16 +115,16 @@ export default function NewLoanReview({ history, location }: Props) {
               <Column>
                 <EthAddress>
                   <h3>"Lender"</h3>
-                  <p>{ownName}</p>
-                  <p>{ownAccount}</p>
+                  <p>{loanData.selectedContact.name}</p>
+                  <p>{loanData.selectedContact.ethAddress}</p>
                 </EthAddress>
               </Column>
 
               <Column>
                 <EthAddress>
                   <h3>"Borrower"</h3>
-                  <p>{loanData.selectedContact.name}</p>
-                  <p>{loanData.selectedContact.ethAddress}</p>
+                  <p>{ownName}</p>
+                  <p>{ownAccount}</p>
                 </EthAddress>
               </Column>
             </Row>
