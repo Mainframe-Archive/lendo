@@ -39,6 +39,7 @@ export default function NewLoanReview({ history, location }: Props) {
   const ownAccount = useOwnAccount()
   const [accepted, setAccepted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
   const loanData: NewLoanData = location.state
 
   if (!loanData) {
@@ -54,13 +55,15 @@ export default function NewLoanReview({ history, location }: Props) {
 
   const submitLoan = () => {
     setIsLoading(true)
+    setError(null)
 
     requestLoan(loanData, ownAccount)
       .then(() => {
         history.push('/')
       })
-      .catch(() => {
+      .catch(error => {
         // error msg
+        setError(error)
       })
       .finally(() => {
         setIsLoading(false)
@@ -71,6 +74,24 @@ export default function NewLoanReview({ history, location }: Props) {
     return (
       <Layout title="Sending contract">
         <h1>Loading</h1>
+      </Layout>
+    )
+  }
+
+  if (error) {
+    return (
+      <Layout title="Error">
+        <FormContainer>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+
+          <FormActions>
+            <Button onClick={submitLoan} primary>
+              Retry
+            </Button>
+
+            <LinkButton to="/new-loan/setup">Review Terms</LinkButton>
+          </FormActions>
+        </FormContainer>
       </Layout>
     )
   }
