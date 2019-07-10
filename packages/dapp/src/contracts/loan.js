@@ -1,5 +1,5 @@
 //kovan address
-export function getLoanAddress(networkVersion) {
+export function getLoanContractAddress(networkVersion) {
   switch (networkVersion) {
     case 'local':
       return '0x2B922547600E3822F1f8f893274B7ECD4A75a54D'
@@ -8,7 +8,7 @@ export function getLoanAddress(networkVersion) {
     case '1':
       return ''
     default:
-      return ''
+      return '0x2B922547600E3822F1f8f893274B7ECD4A75a54D'
   }
 }
 

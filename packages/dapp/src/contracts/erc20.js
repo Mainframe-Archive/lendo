@@ -1,5 +1,5 @@
 //kovan address
-export function getDaiAddress(network) {
+export function getDaiContractAddress(network) {
   switch (network) {
     case 'local':
       return '0xEB581fAAE60609aE261Ed53927331Ee83a8d3Ede'
@@ -8,7 +8,7 @@ export function getDaiAddress(network) {
     case '1':
       return ''
     default:
-      return ''
+      return '0xEB581fAAE60609aE261Ed53927331Ee83a8d3Ede'
   }
 }
 
