@@ -5,6 +5,7 @@ import { loanAbi, getLoanContractAddress } from 'contracts/loan'
 import { erc20Abi, getDaiContractAddress } from 'contracts/erc20'
 import type { Address, LoanData, NewLoanData } from 'types'
 import { toIntString } from 'util/formatNumber'
+import type { Contact } from '@mainframe/sdk/cjs/types'
 
 export const sdk = new MainframeSDK()
 export const web3 = new Web3(sdk.ethereum.web3Provider)
@@ -19,6 +20,14 @@ export function getDAIContract(networkVersion) {
 
 export function getOwnAccount(): Promise<Address> {
   return sdk.ethereum.getDefaultAccount()
+}
+
+export function getContactByAddress(address: Address): Promise<Contact> {
+  return sdk.contacts.getApprovedContacts().then((contacts: Array<Contact>) => {
+    return contacts.find(contact => {
+      return contact.data.profile.ethAddress.toLowerCase() === address.toLowerCase()
+    })
+  })
 }
 
 export function getNetworkVersion() {
@@ -46,7 +55,6 @@ export function approveDAITransfer(
   loan: LoanData,
   senderAddress: Address,
 ): Promise<void> {
-
   const networkVersion = getNetworkVersion()
   const DAIContract = getDAIContract(networkVersion)
   const loanContractAddress = getLoanContractAddress(networkVersion)
@@ -60,7 +68,6 @@ export function approveLoan(
   index: number,
   senderAddress: Address,
 ): Promise<void> {
-
   const networkVersion = getNetworkVersion()
   const loanContract = getLoanContract(networkVersion)
 
@@ -112,6 +119,28 @@ export function useBorrowedLoans(borrowerAddress: Address): Array<LoanData> {
   return loans
 }
 
+export function useBorrowedLoanById(
+  borrowerAddress: Address,
+  index: number,
+): LoanData | null {
+  const [loan, setLoan] = useState(null)
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
+  useEffect(() => {
+    if (borrowerAddress) {
+      loanContract.methods
+        .loansByBorrower(borrowerAddress, index)
+        .call()
+        .then(loanIndex => loanContract.methods.loans(loanIndex).call())
+        .then(setLoan)
+    }
+    // eslint-disable-next-line
+  }, [borrowerAddress, networkVersion])
+
+  return loan
+}
+
 export function useLendedLoans(lenderAddress: Address): Array<LoanData> {
   const [loans, setLoans] = useState([])
   const networkVersion = getNetworkVersion()
@@ -146,4 +175,26 @@ export function useLendedLoans(lenderAddress: Address): Array<LoanData> {
   }, [lenderAddress, networkVersion])
 
   return loans
+}
+
+export function useLendedLoanById(
+  lenderAddress: Address,
+  index: number,
+): LoanData | null {
+  const [loan, setLoan] = useState(null)
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
+  useEffect(() => {
+    if (lenderAddress) {
+      loanContract.methods
+        .loansByLender(lenderAddress, index)
+        .call()
+        .then(loanIndex => loanContract.methods.loans(loanIndex).call())
+        .then(setLoan)
+    }
+    // eslint-disable-next-line
+  }, [lenderAddress, networkVersion])
+
+  return loan
 }

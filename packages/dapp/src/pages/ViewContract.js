@@ -1,7 +1,5 @@
 // @flow
 import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Row, Column, Checkbox } from '@morpheus-ui/core'
 import Layout from 'ui/Layouts/default'
 import Button from 'ui/Button'
 import Fieldset from 'ui/Fieldset'
@@ -9,17 +7,19 @@ import FormActions from 'ui/FormActions'
 import FormContainer from 'ui/FormContainer'
 import FormTitle from 'ui/FormTitle'
 import LinkButton from 'ui/LinkButton'
-import type { NewLoanData } from 'types'
+import { Column, Row } from '@morpheus-ui/core'
+import {
+  approveDAITransfer,
+  approveLoan,
+  getContactByAddress,
+  useLendedLoanById,
+  useOwnAccount,
+} from 'services/LoanService'
+import type { LoanData } from 'types'
+import styled from 'styled-components'
 import formatNumber from 'util/formatNumber'
 import calculateSimpleInterest from 'util/calculateSimpleInterest'
 import { format } from 'date-fns'
-import { useOwnAccount, requestLoan } from 'services/LoanService'
-import { primary } from 'theme'
-
-type Props = {
-  history: any,
-  location: any,
-}
 
 const EthAddress = styled.span`
   word-break: break-all;
@@ -35,34 +35,55 @@ const EthAddress = styled.span`
 
 const humanReadableDate = (date: Date): string => format(date, 'MM/DD/YYYY')
 
-export default function NewLoanReview({ history, location }: Props) {
+type Props = {
+  match: any,
+  history: any,
+}
+
+export default function ViewContract({ match, history }: Props) {
+  const loanIndex = match.params.loanId
   const ownName = 'Satoshi Nakamoto'
   const ownAccount = useOwnAccount()
-  const [accepted, setAccepted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-  const loanData: NewLoanData = location.state
+  const loanData: LoanData = useLendedLoanById(ownAccount, loanIndex)
+  const [borrowerName, setBorrowerName] = useState('')
 
-  if (!loanData) {
-    history.push('/new-loan/setup')
-    return null
+  let totalDebit = 0
+
+  if (loanData) {
+    getContactByAddress(loanData.borrower).then(borrower =>
+      setBorrowerName(borrower.data.profile.name),
+    )
+    // TODO: interest should be read from smart contract
+    loanData.interest = 1500
+
+    totalDebit = calculateSimpleInterest(
+      loanData.amount,
+      loanData.interest,
+    ).toFixed(2)
+  } else {
+    return (
+      <Layout title={`Contract #${loanIndex}`}>
+        <h1>Loading</h1>
+      </Layout>
+    )
   }
 
-  const totalDebit = calculateSimpleInterest(
-    loanData.loanAmount,
-    loanData.interest,
-  ).toFixed(2)
-
-  const submitLoan = () => {
+  function acceptLoan(loan: LoanData, index) {
     setIsLoading(true)
     setError(null)
 
-    requestLoan(loanData, ownAccount)
+    approveDAITransfer(loan, ownAccount)
       .then(() => {
-        history.push('/')
+        console.log('dai transfer approved!')
+        return approveLoan(index, ownAccount)
+      })
+      .then(() => {
+        console.log('finished both contracts successfully')
+        history.push('/loaned')
       })
       .catch(error => {
-        // error msg
         setError(error)
       })
       .finally(() => {
@@ -72,7 +93,7 @@ export default function NewLoanReview({ history, location }: Props) {
 
   if (isLoading) {
     return (
-      <Layout title="Sending contract">
+      <Layout title="Approving contract">
         <h1>Loading</h1>
       </Layout>
     )
@@ -85,7 +106,7 @@ export default function NewLoanReview({ history, location }: Props) {
           <pre>{JSON.stringify(error, null, 2)}</pre>
 
           <FormActions>
-            <Button onClick={submitLoan} primary>
+            <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
               Retry
             </Button>
 
@@ -97,13 +118,13 @@ export default function NewLoanReview({ history, location }: Props) {
   }
 
   return (
-    <Layout title="New loan">
+    <Layout title={`Contract #${loanIndex}`}>
       <FormContainer>
         <FormTitle>Loan Contract</FormTitle>
 
         <div>
           <Fieldset>
-            <h1>{loanData.loanName}</h1>
+            <h1>{loanData.name}</h1>
 
             <p>
               This contract is entered into by and between the below named
@@ -115,16 +136,16 @@ export default function NewLoanReview({ history, location }: Props) {
               <Column>
                 <EthAddress>
                   <h3>"Lender"</h3>
-                  <p>{loanData.selectedContact.name}</p>
-                  <p>{loanData.selectedContact.ethAddress}</p>
+                  <p>{ownName}</p>
+                  <p>{loanData.lender}</p>
                 </EthAddress>
               </Column>
 
               <Column>
                 <EthAddress>
                   <h3>"Borrower"</h3>
-                  <p>{ownName}</p>
-                  <p>{ownAccount}</p>
+                  <p>{borrowerName}</p>
+                  <p>{loanData.borrower}</p>
                 </EthAddress>
               </Column>
             </Row>
@@ -132,10 +153,10 @@ export default function NewLoanReview({ history, location }: Props) {
 
           <Fieldset legend="Loan terms">
             <p>
-              {loanData.selectedContact.name} agrees to loan {ownName}{' '}
-              <strong>{formatNumber(loanData.loanAmount)} DAI</strong> upon
-              signing this contract. {ownName} agrees to pay{' '}
-              {loanData.selectedContact.name} back loan amount plus APR of{' '}
+              {ownName} agrees to loan {borrowerName}{' '}
+              <strong>{formatNumber(loanData.amount)} DAI</strong> upon signing
+              this contract. {borrowerName} agrees to pay {ownName} back loan
+              amount plus APR of{' '}
               <strong>{formatNumber(loanData.interest)}%</strong>. The total
               payback amount is <strong>{formatNumber(totalDebit)} DAI</strong>{' '}
               due on {humanReadableDate(loanData.dueDate)}.
@@ -146,34 +167,18 @@ export default function NewLoanReview({ history, location }: Props) {
             <p>
               By signing, you agree that you have read and agree to the loan
               terms set above. Upon signing, the loan will be automatically sent
-              to {loanData.selectedContact.name}.
+              to {borrowerName} at address <strong>{loanData.borrower}</strong>.
             </p>
-
-            <Checkbox
-              name="accepted"
-              label="I agree to a processing fee of 200 MFT"
-              required
-              defaultValue={accepted}
-              onChange={setAccepted}
-              theme={{
-                checkSymbolColor: primary,
-                containerBorderColor: primary,
-                containerCheckedShadow: false,
-                containerCheckedBorderColor: primary,
-                labelColor: primary,
-                fontSize: '1.3rem',
-              }}
-            />
           </Fieldset>
+
+          <FormActions>
+            <LinkButton to="/loaned">Cancel</LinkButton>
+
+            <Button primary onClick={() => acceptLoan(loanData, loanIndex)}>
+              Sign & Send
+            </Button>
+          </FormActions>
         </div>
-
-        <FormActions>
-          <LinkButton to="/">Cancel</LinkButton>
-
-          <Button primary disabled={!accepted} onClick={submitLoan}>
-            Sign & Send
-          </Button>
-        </FormActions>
       </FormContainer>
     </Layout>
   )
