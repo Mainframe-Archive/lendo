@@ -64,7 +64,7 @@ export default function ViewContract({ match, history }: Props) {
     ).toFixed(2)
   } else {
     return (
-      <Layout title={`Contract #${loanIndex}`}>
+      <Layout title={`Contract: `}>
         <h1>Loading</h1>
       </Layout>
     )
@@ -122,7 +122,7 @@ export default function ViewContract({ match, history }: Props) {
   }
 
   return (
-    <Layout title={`Contract #${loanIndex}`}>
+    <Layout title={`Contract: ${loanData.name}`}>
       <FormContainer>
         <FormTitle>Loan Contract</FormTitle>
 
