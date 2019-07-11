@@ -106,11 +106,15 @@ export default function ViewContract({ match, history }: Props) {
           <pre>{JSON.stringify(error, null, 2)}</pre>
 
           <FormActions>
-            <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
-              Retry
-            </Button>
+            {loanData.status === 0 && (
+              <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
+                Retry
+              </Button>
+            )}
 
-            <LinkButton to="/new-loan/setup">Review Terms</LinkButton>
+            <LinkButton to="/loaned">
+              Return to loans
+            </LinkButton>
           </FormActions>
         </FormContainer>
       </Layout>
