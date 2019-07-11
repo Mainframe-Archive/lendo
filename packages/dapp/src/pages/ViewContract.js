@@ -11,6 +11,7 @@ import { Column, Row } from '@morpheus-ui/core'
 import {
   approveDAITransfer,
   approveLoan,
+  getContactByAddress,
   useLendedLoanById,
   useOwnAccount,
 } from 'services/LoanService'
@@ -42,18 +43,32 @@ type Props = {
 export default function ViewContract({ match, history }: Props) {
   const loanIndex = match.params.loanId
   const ownName = 'Satoshi Nakamoto'
-  const borrowerName = 'Nick Szabo'
   const ownAccount = useOwnAccount()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const loanData: LoanData = useLendedLoanById(ownAccount, loanIndex)
-  // TODO: interest should be read from smart contract
-  loanData.interest = 1500
+  const [borrowerName, setBorrowerName] = useState('')
 
-  const totalDebit = calculateSimpleInterest(
-    loanData.amount,
-    loanData.interest,
-  ).toFixed(2)
+  let totalDebit = 0
+
+  if (loanData) {
+    getContactByAddress(loanData.borrower).then(borrower =>
+      setBorrowerName(borrower.data.profile.name),
+    )
+    // TODO: interest should be read from smart contract
+    loanData.interest = 1500
+
+    totalDebit = calculateSimpleInterest(
+      loanData.amount,
+      loanData.interest,
+    ).toFixed(2)
+  } else {
+    return (
+      <Layout title={`Contract #${loanIndex}`}>
+        <h1>Loading</h1>
+      </Layout>
+    )
+  }
 
   function acceptLoan(loan: LoanData, index) {
     setIsLoading(true)
