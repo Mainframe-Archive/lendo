@@ -172,11 +172,17 @@ export default function ViewContract({ match, history }: Props) {
           </Fieldset>
 
           <FormActions>
-            <LinkButton to="/loaned">Cancel</LinkButton>
+            {loanData.status === 0 ? (
+              <>
+                <LinkButton to="/loaned">Cancel</LinkButton>
 
-            <Button primary onClick={() => acceptLoan(loanData, loanIndex)}>
-              Sign & Send
-            </Button>
+                <Button primary onClick={() => acceptLoan(loanData, loanIndex)}>
+                  Sign & Send
+                </Button>
+              </>
+            ) : (
+              <LinkButton to="/loaned">Return</LinkButton>
+            )}
           </FormActions>
         </div>
       </FormContainer>
