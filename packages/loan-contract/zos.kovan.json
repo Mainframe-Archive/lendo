@@ -1,11 +1,11 @@
 {
   "contracts": {
     "Loan": {
-      "address": "0x55b7bE156C656D332EDea30b5Bf2Ea9cAb1a4C50",
-      "constructorCode": "608060405234801561001057600080fd5b5061161f806100206000396000f3fe",
-      "bodyBytecodeHash": "fa8350583fc997c4ad64cca8a17a150637fa4b2ba6f877c6be29be8854afe0f0",
-      "localBytecodeHash": "0a5f6862e0b978fa0b6e6d29178b7b27f7fc3dcf73707527f2e4021d4b2130ef",
-      "deployedBytecodeHash": "0a5f6862e0b978fa0b6e6d29178b7b27f7fc3dcf73707527f2e4021d4b2130ef",
+      "address": "0xe026B97cDc56F03F086D6d7b136d09F3475dBC22",
+      "constructorCode": "608060405234801561001057600080fd5b5061164e806100206000396000f3fe",
+      "bodyBytecodeHash": "0134f580d0e3eb71a4fb786befb159f7352ab2f4440028a2eece4f0af1acaaa3",
+      "localBytecodeHash": "7b3fc89710340e552356142c4ffb07ede38179c6c55b1b3f112a08c1501d1c14",
+      "deployedBytecodeHash": "7b3fc89710340e552356142c4ffb07ede38179c6c55b1b3f112a08c1501d1c14",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -69,6 +69,12 @@
               "astId": 31,
               "type": "t_enum<Loan.LoanStatuses>",
               "src": "657:19:0"
+            },
+            {
+              "label": "expectedAmount",
+              "astId": 33,
+              "type": "t_uint256",
+              "src": "719:22:0"
             }
           ]
         },
@@ -113,7 +119,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 363,
+          "astId": 368,
           "type": "t_bool",
           "src": "757:24:2"
         },
@@ -121,7 +127,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 365,
+          "astId": 370,
           "type": "t_bool",
           "src": "876:25:2"
         },
@@ -129,7 +135,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 421,
+          "astId": 426,
           "type": "t_array:50<t_uint256>",
           "src": "1951:29:2"
         },
@@ -145,33 +151,33 @@
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "loans",
-          "astId": 39,
+          "astId": 41,
           "type": "t_array:dyn<t_struct<Loan.LoanData>>",
-          "src": "894:23:0"
+          "src": "959:23:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "totalLoanCount",
-          "astId": 41,
+          "astId": 43,
           "type": "t_uint256",
-          "src": "922:29:0"
+          "src": "987:29:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "loansByLender",
-          "astId": 46,
+          "astId": 48,
           "type": "t_mapping<t_array:dyn<t_uint256>>",
-          "src": "1186:51:0"
+          "src": "1251:51:0"
         },
         {
           "contract": "Loan",
           "path": "contracts/Loan.sol",
           "label": "loansByBorrower",
-          "astId": 64,
+          "astId": 66,
           "type": "t_mapping<t_array:dyn<t_uint256>>",
-          "src": "1603:53:0"
+          "src": "1668:53:0"
         }
       ],
       "warnings": {
@@ -179,18 +185,7 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": [],
-        "storageUncheckedVars": [
-          {
-            "contract": "Loan",
-            "path": "contracts/Loan.sol",
-            "label": "loans",
-            "astId": 39,
-            "type": "t_array:dyn<t_struct<Loan.LoanData>>",
-            "src": "894:23:0"
-          }
-        ],
-        "storageDiff": []
+        "uninitializedBaseContracts": []
       }
     }
   },
@@ -198,15 +193,9 @@
   "proxies": {
     "loan-contract/Loan": [
       {
-        "address": "0xb0a17D694D56A3E355c735EF4CBA3f360973AFdc",
+        "address": "0x5FaF1dC696F4Aa0e290d0a267365b7d64178BED4",
         "version": "0.1.0",
-        "implementation": "0x55e78126AcF5aa44a3CDbECaF2cA881179C81bFd"
-      },
-      {
-        "address": "0x6Cd759C10578c8835df450f2AA21C620d16b57fB",
-        "version": "0.1.0",
-        "implementation": "0x55b7bE156C656D332EDea30b5Bf2Ea9cAb1a4C50",
-        "admin": "0x3DAFAA2Cd4C35F54750D57a18a0163e2165Bf794"
+        "implementation": "0xe026B97cDc56F03F086D6d7b136d09F3475dBC22"
       }
     ]
   },
@@ -219,6 +208,6 @@
     }
   },
   "proxyAdmin": {
-    "address": "0x3DAFAA2Cd4C35F54750D57a18a0163e2165Bf794"
+    "address": "0xD03092f341D1BfF0C4d8808fbE4D587F6AAFad36"
   }
 }
