@@ -30,6 +30,9 @@ contract Loan is Initializable {
 
     // Status
     LoanStatuses status;
+
+    // Amount after interest in DAI
+    uint256 expectedAmount;
   }
 
   enum LoanStatuses {
@@ -82,10 +85,10 @@ contract Loan is Initializable {
   //
   // Returns how many loans this borrower has already requested; the loan data
   // can be read by calling loansByBorrower[index] with this returned value.
-  function requestLoan(address lender, string memory name, uint256 amount, uint256 dueDate) public returns (uint256) {
+  function requestLoan(address lender, string memory name, uint256 amount, uint256 dueDate, uint256 expectedAmount) public returns (uint256) {
     require(lender != msg.sender, "You can't borrow money from yourself");
 
-    LoanData memory loan = LoanData(lender, msg.sender, name, amount, dueDate, LoanStatuses.Requested);
+    LoanData memory loan = LoanData(lender, msg.sender, name, amount, dueDate, LoanStatuses.Requested, expectedAmount);
     totalLoanCount = loans.push(loan);
     uint256 loanIdx = totalLoanCount - 1;
     loansByLender[lender].push(loanIdx);

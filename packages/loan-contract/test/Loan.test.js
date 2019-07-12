@@ -81,6 +81,7 @@ contract('Loan', function(accounts) {
         'This request should actually fail',
         10,
         new Date('2050-01-01T00:00:00Z').getTime() / 1000,
+        11
       )
       .send({ from: borrowerAddress, gas: 5000000 }).should.be.rejected
 
@@ -102,6 +103,8 @@ contract('Loan', function(accounts) {
 
     // Approve transfer allowance
     const amount = (10e18).toString()
+    const expectedAmount = (11*10e18).toString()
+
     await this.daiMockProxy.methods
       .approve(proxyAddress, amount)
       .send({ from: lenderAddress, gas: 5000000 })
@@ -117,6 +120,7 @@ contract('Loan', function(accounts) {
         'This is a test loan request',
         amount,
         new Date('2050-01-01T00:00:00Z').getTime() / 1000,
+        expectedAmount
       )
       .send({ from: borrowerAddress, gas: 5000000 })
     events.should.have.key('LoanRequested')

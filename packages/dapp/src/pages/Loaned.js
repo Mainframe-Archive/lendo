@@ -19,7 +19,8 @@ export default function Loaned() {
             <th>Status</th>
             <th>Name</th>
             <th>Borrower</th>
-            <th>Amount</th>
+            <th>Amount Initial</th>
+            <th>Amount to receive</th>
             <th></th>
           </tr>
         </thead>
@@ -32,6 +33,7 @@ export default function Loaned() {
               <td>{loan.name}</td>
               <td>{loan.borrower}</td>
               <td>{formatNumber(loan.amount)} DAI</td>
+              <td>{formatNumber(loan.expectedAmount)} DAI</td>
               <td>
                 <Link to={`/view-contract/lended/${key}`}>View contract</Link>
               </td>

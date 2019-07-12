@@ -6,6 +6,7 @@ import { erc20Abi, getDaiContractAddress } from 'contracts/erc20'
 import type { Address, LoanData, NewLoanData } from 'types'
 import { toIntString } from 'util/formatNumber'
 import type { Contact } from '@mainframe/sdk/cjs/types'
+import calculateSimpleInterest from '../util/calculateSimpleInterest'
 
 export const sdk = new MainframeSDK()
 export const web3 = new Web3(sdk.ethereum.web3Provider)
@@ -41,12 +42,15 @@ export function requestLoan(
   const networkVersion = getNetworkVersion()
   const loanContract = getLoanContract(networkVersion)
 
+  const expectedAmount = calculateSimpleInterest(data.loanAmount, data.interest)
+
   return loanContract.methods
     .requestLoan(
       data.selectedContact.ethAddress,
       data.loanName,
       parseInt(toIntString(data.loanAmount)),
       new Date(data.dueDate).getTime() / 1000,
+      expectedAmount
     )
     .send({ from: senderAddress })
 }

@@ -4,7 +4,7 @@ export function getLoanContractAddress(networkVersion) {
     case 'local':
       return '0x2B922547600E3822F1f8f893274B7ECD4A75a54D'
     case '42':
-      return '0x6Cd759C10578c8835df450f2AA21C620d16b57fB'
+      return '0x5FaF1dC696F4Aa0e290d0a267365b7d64178BED4'
     case '1':
       return ''
     default:
@@ -121,6 +121,10 @@ export const loanAbi = [
         name: 'status',
         type: 'uint8',
       },
+      {
+        name: 'expectedAmount',
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
@@ -222,6 +226,10 @@ export const loanAbi = [
       },
       {
         name: 'dueDate',
+        type: 'uint256',
+      },
+      {
+        name: 'expectedAmount',
         type: 'uint256',
       },
     ],
