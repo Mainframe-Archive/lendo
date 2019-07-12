@@ -1,6 +1,7 @@
 // @flow
 import React, { useState } from 'react'
 import Layout from 'ui/Layouts/default'
+import AcceptedIcon from 'ui/AcceptedIcon'
 import Button from 'ui/Button'
 import Fieldset from 'ui/Fieldset'
 import FormActions from 'ui/FormActions'
@@ -40,7 +41,7 @@ type Props = {
   history: any,
 }
 
-export default function ViewContract({ match, history }: Props) {
+export default function ViewLoanedContract({ match, history }: Props) {
   const loanIndex = match.params.loanId
   const ownName = 'Satoshi Nakamoto'
   const ownAccount = useOwnAccount()
@@ -106,7 +107,7 @@ export default function ViewContract({ match, history }: Props) {
           <pre>{JSON.stringify(error, null, 2)}</pre>
 
           <FormActions>
-            {loanData.status === 0 && (
+            {loanData.status === "0" && (
               <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
                 Retry
               </Button>
@@ -133,7 +134,7 @@ export default function ViewContract({ match, history }: Props) {
             <p>
               This contract is entered into by and between the below named
               parties [Lender and Borrower.] This loan will expire at the close
-              of the business on {humanReadableDate(loanData.dueDate)}.
+              of the business on {humanReadableDate(loanData.dueDate * 1000)}.
             </p>
 
             <Row size={2}>
@@ -163,7 +164,7 @@ export default function ViewContract({ match, history }: Props) {
               amount plus APR of{' '}
               <strong>{formatNumber(loanData.interest)}%</strong>. The total
               payback amount is <strong>{formatNumber(totalDebit)} DAI</strong>{' '}
-              due on {humanReadableDate(loanData.dueDate)}.
+              due on {humanReadableDate(loanData.dueDate * 1000)}.
             </p>
           </Fieldset>
 
@@ -173,10 +174,28 @@ export default function ViewContract({ match, history }: Props) {
               terms set above. Upon signing, the loan will be automatically sent
               to {borrowerName} at address <strong>{loanData.borrower}</strong>.
             </p>
+
+            <Row size={2}>
+              <Column>
+                <p>
+                  <strong>Borrower</strong> ({borrowerName})
+                </p>
+                <AcceptedIcon />
+              </Column>
+
+              <Column>
+                <p>
+                  <strong>Lender</strong> ({ownName})
+                </p>
+                {loanData.status === "1" && (
+                  <AcceptedIcon />
+                )}
+              </Column>
+            </Row>
           </Fieldset>
 
           <FormActions>
-            {loanData.status === 0 ? (
+            {loanData.status === "0" ? (
               <>
                 <LinkButton to="/loaned">Cancel</LinkButton>
 

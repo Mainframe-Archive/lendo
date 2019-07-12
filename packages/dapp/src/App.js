@@ -14,7 +14,9 @@ import {
   Borrowed,
   Requests,
   NewLoanSetup,
-  NewLoanReview, ViewContract,
+  NewLoanReview,
+  ViewLoanedContract,
+  ViewBorrowedContract,
 } from 'pages'
 
 export default function App() {
@@ -31,8 +33,14 @@ export default function App() {
             <Route path="/loaned" component={Loaned} />
             <Route path="/borrowed" component={Borrowed} />
             <Route path="/requests" component={Requests} />
-            <Route path="/view-contract/borrowed/:loanId" component={ViewContract} />
-            <Route path="/view-contract/lended/:loanId" component={ViewContract} />
+            <Route
+              path="/view-contract/borrowed/:loanId"
+              component={ViewBorrowedContract}
+            />
+            <Route
+              path="/view-contract/lended/:loanId"
+              component={ViewLoanedContract}
+            />
             <Redirect to="/" />
           </Switch>
         </Route>
