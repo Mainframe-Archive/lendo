@@ -64,7 +64,7 @@ export default function ViewContract({ match, history }: Props) {
     ).toFixed(2)
   } else {
     return (
-      <Layout title={`Contract #${loanIndex}`}>
+      <Layout title={`Contract: `}>
         <h1>Loading</h1>
       </Layout>
     )
@@ -106,11 +106,15 @@ export default function ViewContract({ match, history }: Props) {
           <pre>{JSON.stringify(error, null, 2)}</pre>
 
           <FormActions>
-            <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
-              Retry
-            </Button>
+            {loanData.status === 0 && (
+              <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
+                Retry
+              </Button>
+            )}
 
-            <LinkButton to="/new-loan/setup">Review Terms</LinkButton>
+            <LinkButton to="/loaned">
+              Return to loans
+            </LinkButton>
           </FormActions>
         </FormContainer>
       </Layout>
@@ -118,7 +122,7 @@ export default function ViewContract({ match, history }: Props) {
   }
 
   return (
-    <Layout title={`Contract #${loanIndex}`}>
+    <Layout title={`Contract: ${loanData.name}`}>
       <FormContainer>
         <FormTitle>Loan Contract</FormTitle>
 
@@ -172,11 +176,17 @@ export default function ViewContract({ match, history }: Props) {
           </Fieldset>
 
           <FormActions>
-            <LinkButton to="/loaned">Cancel</LinkButton>
+            {loanData.status === 0 ? (
+              <>
+                <LinkButton to="/loaned">Cancel</LinkButton>
 
-            <Button primary onClick={() => acceptLoan(loanData, loanIndex)}>
-              Sign & Send
-            </Button>
+                <Button primary onClick={() => acceptLoan(loanData, loanIndex)}>
+                  Sign & Send
+                </Button>
+              </>
+            ) : (
+              <LinkButton to="/loaned">Return</LinkButton>
+            )}
           </FormActions>
         </div>
       </FormContainer>
