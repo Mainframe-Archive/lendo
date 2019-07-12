@@ -34,7 +34,7 @@ const EthAddress = styled.span`
   }
 `
 
-const humanReadableDate = (date: Date): string => format(date, 'MM/DD/YYYY')
+const humanReadableDate = (date: Date | number): string => format(date, 'MM/DD/YYYY')
 
 type Props = {
   match: any,
