@@ -62,7 +62,7 @@ export default function ViewBorrowedContract({ match }: Props) {
     ).toFixed(2)
   } else {
     return (
-      <Layout title={`Contract: `}>
+      <Layout title="Contract: ">
         <h1>Loading</h1>
       </Layout>
     )
