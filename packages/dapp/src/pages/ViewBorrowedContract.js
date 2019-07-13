@@ -1,6 +1,7 @@
 // @flow
 import React, { useState } from 'react'
 import Layout from 'ui/Layouts/default'
+import AcceptedIcon from 'ui/AcceptedIcon'
 import Fieldset from 'ui/Fieldset'
 import FormActions from 'ui/FormActions'
 import FormContainer from 'ui/FormContainer'
@@ -17,8 +18,7 @@ import type { LoanData } from 'types'
 import styled from 'styled-components'
 import formatNumber from 'util/formatNumber'
 import calculateSimpleInterest from 'util/calculateSimpleInterest'
-import { format } from 'date-fns'
-import AcceptedIcon from '../ui/AcceptedIcon'
+import toShortDate from 'util/toShortDate'
 
 const EthAddress = styled.span`
   word-break: break-all;
@@ -31,9 +31,6 @@ const EthAddress = styled.span`
     margin: 8px 0;
   }
 `
-
-const humanReadableDate = (date: Date | number): string =>
-  format(date, 'MM/DD/YYYY')
 
 type Props = {
   match: any,
@@ -82,7 +79,7 @@ export default function ViewBorrowedContract({ match }: Props) {
             <p>
               This contract is entered into by and between the below named
               parties [Lender and Borrower.] This loan will expire at the close
-              of the business on {humanReadableDate(loanData.dueDate * 1000)}.
+              of the business on {toShortDate(loanData.dueDate * 1000)}.
             </p>
 
             <Row size={2}>
@@ -112,7 +109,7 @@ export default function ViewBorrowedContract({ match }: Props) {
               amount plus APR of{' '}
               <strong>{formatNumber(loanData.interest)}%</strong>. The total
               payback amount is <strong>{formatNumber(totalDebit)} DAI</strong>{' '}
-              due on {humanReadableDate(loanData.dueDate * 1000)}.
+              due on {toShortDate(loanData.dueDate * 1000)}.
             </p>
           </Fieldset>
 

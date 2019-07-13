@@ -12,7 +12,7 @@ import LinkButton from 'ui/LinkButton'
 import type { NewLoanData } from 'types'
 import formatNumber from 'util/formatNumber'
 import calculateSimpleInterest from 'util/calculateSimpleInterest'
-import { format } from 'date-fns'
+import toShortDate from 'util/toShortDate'
 import { useOwnAccount, requestLoan, useOwnName } from 'services/LoanService'
 import { primary } from 'theme'
 
@@ -32,8 +32,6 @@ const EthAddress = styled.span`
     margin: 8px 0;
   }
 `
-
-const humanReadableDate = (date: Date): string => format(date, 'MM/DD/YYYY')
 
 export default function NewLoanReview({ history, location }: Props) {
   const ownName = useOwnName()
@@ -108,7 +106,7 @@ export default function NewLoanReview({ history, location }: Props) {
             <p>
               This contract is entered into by and between the below named
               parties [Lender and Borrower.] This loan will expire at the close
-              of the business on {humanReadableDate(loanData.dueDate)}.
+              of the business on {toShortDate(loanData.dueDate)}.
             </p>
 
             <Row size={2}>
@@ -138,7 +136,7 @@ export default function NewLoanReview({ history, location }: Props) {
               {loanData.selectedContact.name} back loan amount plus APR of{' '}
               <strong>{formatNumber(loanData.interest)}%</strong>. The total
               payback amount is <strong>{formatNumber(totalDebit)} DAI</strong>{' '}
-              due on {humanReadableDate(loanData.dueDate)}.
+              due on {toShortDate(loanData.dueDate)}.
             </p>
           </Fieldset>
 
