@@ -15,6 +15,7 @@ import {
   getContactByAddress,
   useLendedLoanById,
   useOwnAccount,
+  useOwnName,
 } from 'services/LoanService'
 import type { LoanData } from 'types'
 import styled from 'styled-components'
@@ -34,7 +35,8 @@ const EthAddress = styled.span`
   }
 `
 
-const humanReadableDate = (date: Date | number): string => format(date, 'MM/DD/YYYY')
+const humanReadableDate = (date: Date | number): string =>
+  format(date, 'MM/DD/YYYY')
 
 type Props = {
   match: any,
@@ -43,7 +45,7 @@ type Props = {
 
 export default function ViewLoanedContract({ match, history }: Props) {
   const loanIndex = match.params.loanId
-  const ownName = 'Satoshi Nakamoto'
+  const ownName = useOwnName()
   const ownAccount = useOwnAccount()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -107,15 +109,13 @@ export default function ViewLoanedContract({ match, history }: Props) {
           <pre>{JSON.stringify(error, null, 2)}</pre>
 
           <FormActions>
-            {loanData.status === "0" && (
+            {loanData.status === '0' && (
               <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
                 Retry
               </Button>
             )}
 
-            <LinkButton to="/loaned">
-              Return to loans
-            </LinkButton>
+            <LinkButton to="/loaned">Return to loans</LinkButton>
           </FormActions>
         </FormContainer>
       </Layout>
@@ -187,15 +187,13 @@ export default function ViewLoanedContract({ match, history }: Props) {
                 <p>
                   <strong>Lender</strong> ({ownName})
                 </p>
-                {loanData.status === "1" && (
-                  <AcceptedIcon />
-                )}
+                {loanData.status === '1' && <AcceptedIcon />}
               </Column>
             </Row>
           </Fieldset>
 
           <FormActions>
-            {loanData.status === "0" ? (
+            {loanData.status === '0' ? (
               <>
                 <LinkButton to="/loaned">Cancel</LinkButton>
 

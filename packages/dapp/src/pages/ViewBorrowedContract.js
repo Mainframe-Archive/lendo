@@ -11,6 +11,7 @@ import {
   getContactByAddress,
   useBorrowedLoanById,
   useOwnAccount,
+  useOwnName,
 } from 'services/LoanService'
 import type { LoanData } from 'types'
 import styled from 'styled-components'
@@ -31,7 +32,8 @@ const EthAddress = styled.span`
   }
 `
 
-const humanReadableDate = (date: Date | number): string => format(date, 'MM/DD/YYYY')
+const humanReadableDate = (date: Date | number): string =>
+  format(date, 'MM/DD/YYYY')
 
 type Props = {
   match: any,
@@ -40,7 +42,7 @@ type Props = {
 
 export default function ViewBorrowedContract({ match }: Props) {
   const loanIndex = match.params.loanId
-  const ownName = 'Satoshi Nakamoto'
+  const ownName = useOwnName()
   const ownAccount = useOwnAccount()
   const loanData: LoanData = useBorrowedLoanById(ownAccount, loanIndex)
   const [lenderName, serLenderName] = useState('')
@@ -133,9 +135,7 @@ export default function ViewBorrowedContract({ match }: Props) {
                 <p>
                   <strong>Lender</strong> ({lenderName})
                 </p>
-                {loanData.status === "1" && (
-                  <AcceptedIcon />
-                )}
+                {loanData.status === '1' && <AcceptedIcon />}
               </Column>
             </Row>
           </Fieldset>

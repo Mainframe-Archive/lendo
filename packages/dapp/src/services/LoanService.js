@@ -88,6 +88,12 @@ export function useOwnAccount(): Address | null {
   return ownAccount
 }
 
+export function useOwnName(): string {
+  const [ownName] = useState('Satoshi Nakamoto')
+
+  return ownName
+}
+
 export function useBorrowedLoans(borrowerAddress: Address): Array<LoanData> {
   const [loans, setLoans] = useState([])
   const networkVersion = getNetworkVersion()

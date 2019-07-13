@@ -13,7 +13,7 @@ import type { NewLoanData } from 'types'
 import formatNumber from 'util/formatNumber'
 import calculateSimpleInterest from 'util/calculateSimpleInterest'
 import { format } from 'date-fns'
-import { useOwnAccount, requestLoan } from 'services/LoanService'
+import { useOwnAccount, requestLoan, useOwnName } from 'services/LoanService'
 import { primary } from 'theme'
 
 type Props = {
@@ -36,7 +36,7 @@ const EthAddress = styled.span`
 const humanReadableDate = (date: Date): string => format(date, 'MM/DD/YYYY')
 
 export default function NewLoanReview({ history, location }: Props) {
-  const ownName = 'Satoshi Nakamoto'
+  const ownName = useOwnName()
   const ownAccount = useOwnAccount()
   const [accepted, setAccepted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
