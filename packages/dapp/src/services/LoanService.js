@@ -5,8 +5,8 @@ import { loanAbi, getLoanContractAddress } from 'contracts/loan'
 import { erc20Abi, getDaiContractAddress } from 'contracts/erc20'
 import type { Address, LoanData, NewLoanData } from 'types'
 import { toIntString } from 'util/formatNumber'
+import calculateSimpleInterest from 'util/calculateSimpleInterest'
 import type { Contact } from '@mainframe/sdk/cjs/types'
-import calculateSimpleInterest from '../util/calculateSimpleInterest'
 
 export const sdk = new MainframeSDK()
 export const web3 = new Web3(sdk.ethereum.web3Provider)
