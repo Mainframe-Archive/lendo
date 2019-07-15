@@ -82,6 +82,16 @@ export function approveLoan(
   return loanContract.methods.approveLoan(index).send({ from: senderAddress })
 }
 
+export function payDebt(
+  index: number,
+  senderAddress: Address,
+): Promise<void> {
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
+  return loanContract.methods.payDebt(index).send({ from: senderAddress })
+}
+
 export function useOwnAccount(): Address | null {
   const [ownAccount, setOwnAccount] = useState(null)
 
