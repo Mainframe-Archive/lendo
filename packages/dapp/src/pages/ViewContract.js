@@ -17,8 +17,8 @@ import {
 } from 'services/LoanService'
 import type { LoanData } from 'types'
 import styled from 'styled-components'
-import formatNumber from 'util/formatNumber'
-import calculateSimpleInterest from 'util/calculateSimpleInterest'
+import formatNumber, { fromWei } from 'util/formatNumber'
+import calculateSimpleInterest, { calculateInterestWithAmounts } from 'util/calculateSimpleInterest'
 import { format } from 'date-fns'
 
 const EthAddress = styled.span`
@@ -52,16 +52,9 @@ export default function ViewContract({ match, history }: Props) {
   let totalDebit = 0
 
   if (loanData) {
-    getContactByAddress(loanData.borrower).then(borrower =>
-      setBorrowerName(borrower.data.profile.name),
-    )
-    // TODO: interest should be read from smart contract
-    loanData.interest = 1500
-
-    totalDebit = calculateSimpleInterest(
-      loanData.amount,
-      loanData.interest,
-    ).toFixed(2)
+    getContactByAddress(loanData.borrower).then(borrower => {
+      if (borrower) setBorrowerName(borrower.data.profile.name)
+    })
   } else {
     return (
       <Layout title={`Contract #${loanIndex}`}>
@@ -154,11 +147,11 @@ export default function ViewContract({ match, history }: Props) {
           <Fieldset legend="Loan terms">
             <p>
               {ownName} agrees to loan {borrowerName}{' '}
-              <strong>{formatNumber(loanData.amount)} DAI</strong> upon signing
+              <strong>{fromWei(loanData.amount)} DAI</strong> upon signing
               this contract. {borrowerName} agrees to pay {ownName} back loan
               amount plus APR of{' '}
-              <strong>{formatNumber(loanData.interest)}%</strong>. The total
-              payback amount is <strong>{formatNumber(totalDebit)} DAI</strong>{' '}
+              <strong>{calculateInterestWithAmounts(loanData.amount, loanData.expectedAmount)}%</strong>. The total
+              payback amount is <strong>{fromWei(loanData.expectedAmount)} DAI</strong>{' '}
               due on {humanReadableDate(loanData.dueDate)}.
             </p>
           </Fieldset>

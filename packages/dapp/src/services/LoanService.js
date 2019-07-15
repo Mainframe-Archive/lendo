@@ -42,15 +42,18 @@ export function requestLoan(
   const networkVersion = getNetworkVersion()
   const loanContract = getLoanContract(networkVersion)
 
-  const expectedAmount = calculateSimpleInterest(data.loanAmount, data.interest)
+  const expectedAmount = calculateSimpleInterest(data.loanAmount, data.interest).toString()
+
+  const amountToWei = web3.utils.toWei(data.loanAmount, 'ether')
+  const expectedAmounToWei = web3.utils.toWei(expectedAmount, 'ether')
 
   return loanContract.methods
     .requestLoan(
       data.selectedContact.ethAddress,
       data.loanName,
-      parseInt(toIntString(data.loanAmount)),
+      amountToWei,
       new Date(data.dueDate).getTime() / 1000,
-      expectedAmount
+      expectedAmounToWei
     )
     .send({ from: senderAddress })
 }

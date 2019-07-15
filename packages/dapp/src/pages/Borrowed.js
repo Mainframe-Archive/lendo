@@ -32,11 +32,9 @@ export default function Borrowed() {
               </td>
               <td>{loan.name}</td>
               <td>{loan.lender}</td>
-              <td>{formatNumber(loan.amount)} DAI</td>
-              <td>{formatNumber(loan.expectedAmount)} DAI</td>
-              <td>
-                <Link to={`/view-contract/borrowed/${key}`}>View contract</Link>
-              </td>
+              <td>{web3.utils.fromWei(loan.amount)} DAI</td>
+              <td>{web3.utils.fromWei(loan.expectedAmount)} DAI</td>
+              <td onClick={() => payLoan(loan, key)}>{'Pay Loan'}</td>
             </tr>
           ))}
         </tbody>
