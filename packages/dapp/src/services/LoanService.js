@@ -58,8 +58,9 @@ export function requestLoan(
     .send({ from: senderAddress })
 }
 
+
 export function approveDAITransfer(
-  loan: LoanData,
+  amountToApprove: number,
   senderAddress: Address,
 ): Promise<void> {
   const networkVersion = getNetworkVersion()
@@ -67,7 +68,7 @@ export function approveDAITransfer(
   const loanContractAddress = getLoanContractAddress(networkVersion)
 
   return DAIContract.methods
-    .approve(loanContractAddress, Number(loan.amount))
+    .approve(loanContractAddress, amountToApprove)
     .send({ from: senderAddress })
 }
 

@@ -67,7 +67,7 @@ export default function ViewContract({ match, history }: Props) {
     setIsLoading(true)
     setError(null)
 
-    approveDAITransfer(loan, ownAccount)
+    approveDAITransfer(loan.amount, ownAccount)
       .then(() => {
         console.log('dai transfer approved!')
         return approveLoan(index, ownAccount)
