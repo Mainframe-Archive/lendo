@@ -44,12 +44,37 @@ export default function ViewLoanedContract({ match, history }: Props) {
   const loanIndex = match.params.loanId
   const ownName = useOwnName()
   const ownAccount = useOwnAccount()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSendingLoan, setIsSendingLoan] = useState(false)
   const [error, setError] = useState(null)
   const loanData: LoanData = useLendedLoanById(ownAccount, loanIndex)
   const [borrowerName, setBorrowerName] = useState('')
+  const [step, setStep] = useState(0)
 
   let totalDebit = 0
+
+  function acceptLoan(loan: LoanData, index) {
+    setIsSendingLoan(true)
+    setError(null)
+    setStep(1)
+
+    approveDAITransfer(loan, ownAccount)
+      .then(() => {
+        console.log('dai transfer approved!')
+        setStep(2)
+        return approveLoan(index, ownAccount)
+      })
+      .then(() => {
+        console.log('finished both contracts successfully')
+        history.push('/loaned')
+      })
+      .catch(error => {
+        setError(error)
+        setStep(0)
+      })
+      .finally(() => {
+        setIsSendingLoan(false)
+      })
+  }
 
   if (loanData) {
     getContactByAddress(loanData.borrower).then(borrower =>
@@ -70,33 +95,20 @@ export default function ViewLoanedContract({ match, history }: Props) {
     )
   }
 
-  function acceptLoan(loan: LoanData, index) {
-    setIsLoading(true)
-    setError(null)
-
-    approveDAITransfer(loan, ownAccount)
-      .then(() => {
-        console.log('dai transfer approved!')
-        return approveLoan(index, ownAccount)
-      })
-      .then(() => {
-        console.log('finished both contracts successfully')
-        history.push('/loaned')
-      })
-      .catch(error => {
-        setError(error)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
-  }
-
-  if (isLoading) {
-    return (
-      <Layout title="Approving contract">
-        <h1>Loading</h1>
-      </Layout>
-    )
+  if (isSendingLoan) {
+    if (step === 1) {
+      return (
+        <Layout title="Approving DAI transfer">
+          <h1>First you have to allow the contract to transfer DAI transfer on your behalf.</h1>
+        </Layout>
+      )
+    } else if (step === 2) {
+      return (
+        <Layout title="Approving loan contract">
+          <h1>Now proceed to approve the loan and send the funds.</h1>
+        </Layout>
+      )
+    }
   }
 
   if (error) {
