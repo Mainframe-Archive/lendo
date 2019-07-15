@@ -119,9 +119,8 @@ contract Loan is Initializable {
     require(loan.status == LoanStatuses.Approved, "Loan must be in Approved status");
 
     IERC20 dai = IERC20(erc20Address);
-    require(dai.allowance(msg.sender, address(this)) >= loan.amount, "Cannot spend required amount of DAI on behalf of caller");
 
-    require(dai.transferFrom(msg.sender, loan.lender, loan.amount), "Could not transfer tokens to the lender");
+    require(dai.transferFrom(msg.sender, loan.lender, loan.expectedAmount), "Could not transfer tokens to the lender");
     loan.status = LoanStatuses.Paid;
   }
 
