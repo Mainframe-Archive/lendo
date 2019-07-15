@@ -1,6 +1,7 @@
 // @flow
 import React, { useState } from 'react'
 import Layout from 'ui/Layouts/default'
+import AcceptedIcon from 'ui/AcceptedIcon'
 import Button from 'ui/Button'
 import Fieldset from 'ui/Fieldset'
 import FormActions from 'ui/FormActions'
@@ -33,14 +34,14 @@ const EthAddress = styled.span`
   }
 `
 
-const humanReadableDate = (date: Date): string => format(date, 'MM/DD/YYYY')
+const humanReadableDate = (date: Date | number): string => format(date, 'MM/DD/YYYY')
 
 type Props = {
   match: any,
   history: any,
 }
 
-export default function ViewContract({ match, history }: Props) {
+export default function ViewLoanedContract({ match, history }: Props) {
   const loanIndex = match.params.loanId
   const ownName = 'Satoshi Nakamoto'
   const ownAccount = useOwnAccount()
@@ -57,7 +58,7 @@ export default function ViewContract({ match, history }: Props) {
     })
   } else {
     return (
-      <Layout title={`Contract #${loanIndex}`}>
+      <Layout title="Contract: ">
         <h1>Loading</h1>
       </Layout>
     )
@@ -99,11 +100,15 @@ export default function ViewContract({ match, history }: Props) {
           <pre>{JSON.stringify(error, null, 2)}</pre>
 
           <FormActions>
-            <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
-              Retry
-            </Button>
+            {loanData.status === "0" && (
+              <Button onClick={() => acceptLoan(loanData, loanIndex)} primary>
+                Retry
+              </Button>
+            )}
 
-            <LinkButton to="/new-loan/setup">Review Terms</LinkButton>
+            <LinkButton to="/loaned">
+              Return to loans
+            </LinkButton>
           </FormActions>
         </FormContainer>
       </Layout>
@@ -111,7 +116,7 @@ export default function ViewContract({ match, history }: Props) {
   }
 
   return (
-    <Layout title={`Contract #${loanIndex}`}>
+    <Layout title={`Contract: ${loanData.name}`}>
       <FormContainer>
         <FormTitle>Loan Contract</FormTitle>
 
@@ -122,7 +127,7 @@ export default function ViewContract({ match, history }: Props) {
             <p>
               This contract is entered into by and between the below named
               parties [Lender and Borrower.] This loan will expire at the close
-              of the business on {humanReadableDate(loanData.dueDate)}.
+              of the business on {humanReadableDate(loanData.dueDate * 1000)}.
             </p>
 
             <Row size={2}>
@@ -152,7 +157,7 @@ export default function ViewContract({ match, history }: Props) {
               amount plus APR of{' '}
               <strong>{calculateInterestWithAmounts(loanData.amount, loanData.expectedAmount)}%</strong>. The total
               payback amount is <strong>{fromWei(loanData.expectedAmount)} DAI</strong>{' '}
-              due on {humanReadableDate(loanData.dueDate)}.
+              due on {humanReadableDate(loanData.dueDate*1000)}.
             </p>
           </Fieldset>
 
@@ -162,14 +167,38 @@ export default function ViewContract({ match, history }: Props) {
               terms set above. Upon signing, the loan will be automatically sent
               to {borrowerName} at address <strong>{loanData.borrower}</strong>.
             </p>
+
+            <Row size={2}>
+              <Column>
+                <p>
+                  <strong>Borrower</strong> ({borrowerName})
+                </p>
+                <AcceptedIcon />
+              </Column>
+
+              <Column>
+                <p>
+                  <strong>Lender</strong> ({ownName})
+                </p>
+                {loanData.status === "1" && (
+                  <AcceptedIcon />
+                )}
+              </Column>
+            </Row>
           </Fieldset>
 
           <FormActions>
-            <LinkButton to="/loaned">Cancel</LinkButton>
+            {loanData.status === "0" ? (
+              <>
+                <LinkButton to="/loaned">Cancel</LinkButton>
 
-            <Button primary onClick={() => acceptLoan(loanData, loanIndex)}>
-              Sign & Send
-            </Button>
+                <Button primary onClick={() => acceptLoan(loanData, loanIndex)}>
+                  Sign & Send
+                </Button>
+              </>
+            ) : (
+              <LinkButton to="/loaned">Return</LinkButton>
+            )}
           </FormActions>
         </div>
       </FormContainer>

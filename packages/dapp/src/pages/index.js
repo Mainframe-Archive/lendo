@@ -5,7 +5,8 @@ import NewLoanSetup from 'pages/NewLoanSetup'
 import NewLoanReview from 'pages/NewLoanReview'
 import NewLoanConfirmation from 'pages/NewLoanConfirmation'
 import Requests from 'pages/Requests'
-import ViewContract from 'pages/ViewContract'
+import ViewBorrowedContract from 'pages/ViewBorrowedContract'
+import ViewLoanedContract from 'pages/ViewLoanedContract'
 
 export {
   Borrowed,
@@ -15,5 +16,6 @@ export {
   NewLoanReview,
   NewLoanConfirmation,
   Requests,
-  ViewContract,
+  ViewBorrowedContract,
+  ViewLoanedContract,
 }
