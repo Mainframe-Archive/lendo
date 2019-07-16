@@ -3,7 +3,6 @@ import React from 'react'
 import { useOwnAccount, useLendedLoans, web3 } from 'services/LoanService'
 import Layout from 'ui/Layouts/default'
 import LoanStatus from 'ui/LoanStatus'
-import formatNumber from 'util/formatNumber'
 import { Link } from 'react-router-dom'
 import Table from 'ui/Table'
 

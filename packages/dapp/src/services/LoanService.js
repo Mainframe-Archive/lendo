@@ -4,7 +4,6 @@ import Web3 from 'web3'
 import { loanAbi, getLoanContractAddress } from 'contracts/loan'
 import { erc20Abi, getDaiContractAddress } from 'contracts/erc20'
 import type { Address, LoanData, NewLoanData } from 'types'
-import { toIntString } from 'util/formatNumber'
 import type { Contact } from '@mainframe/sdk/cjs/types'
 import calculateSimpleInterest from '../util/calculateSimpleInterest'
 
@@ -57,7 +56,6 @@ export function requestLoan(
     )
     .send({ from: senderAddress })
 }
-
 
 export function approveDAITransfer(
   amountToApprove: number,

@@ -18,8 +18,8 @@ import {
 } from 'services/LoanService'
 import type { LoanData } from 'types'
 import styled from 'styled-components'
-import formatNumber, { fromWei } from 'util/formatNumber'
-import calculateSimpleInterest, { calculateInterestWithAmounts } from 'util/calculateSimpleInterest'
+import { fromWei } from 'util/formatNumber'
+import { calculateInterestWithAmounts } from 'util/calculateSimpleInterest'
 import { format } from 'date-fns'
 
 const EthAddress = styled.span`
@@ -50,8 +50,6 @@ export default function ViewLoanedContract({ match, history }: Props) {
   const loanData: LoanData = useLendedLoanById(ownAccount, loanIndex)
   const [borrowerName, setBorrowerName] = useState('')
 
-  let totalDebit = 0
-
   if (loanData) {
     getContactByAddress(loanData.borrower).then(borrower => {
       if (borrower) setBorrowerName(borrower.data.profile.name)
@@ -79,6 +77,7 @@ export default function ViewLoanedContract({ match, history }: Props) {
       })
       .catch(error => {
         setError(error)
+        console.log('error', error)
       })
       .finally(() => {
         setIsLoading(false)
