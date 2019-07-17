@@ -1,5 +1,6 @@
 // @flow
 import BigNumber from 'bignumber.js'
+import { web3 } from '../services/LoanService'
 
 export default function formatNumber(
   value: string | number,
@@ -28,3 +29,5 @@ export const toIntString = (value: string | number): string =>
 
 export const toBigNumber = (value: BigNumber.Value): BigNumber =>
   new BigNumber(toIntString(value)).dividedBy(100)
+
+export const fromWei = (value: BigNumber.Value): string => web3.utils.fromWei(value)

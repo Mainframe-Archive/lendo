@@ -1,6 +1,7 @@
 // @flow
 import React, { useState } from 'react'
 import Layout from 'ui/Layouts/default'
+import Button from 'ui/Button'
 import Fieldset from 'ui/Fieldset'
 import FormActions from 'ui/FormActions'
 import FormContainer from 'ui/FormContainer'
@@ -11,11 +12,13 @@ import {
   getContactByAddress,
   useBorrowedLoanById,
   useOwnAccount,
+  approveDAITransfer,
+  payDebt,
 } from 'services/LoanService'
 import type { LoanData } from 'types'
 import styled from 'styled-components'
-import formatNumber from 'util/formatNumber'
-import calculateSimpleInterest from 'util/calculateSimpleInterest'
+import { fromWei } from 'util/formatNumber'
+import { calculateInterestWithAmounts } from 'util/calculateSimpleInterest'
 import { format } from 'date-fns'
 import AcceptedIcon from '../ui/AcceptedIcon'
 
@@ -38,14 +41,36 @@ type Props = {
   history: any,
 }
 
-export default function ViewBorrowedContract({ match }: Props) {
+export default function ViewBorrowedContract({ match, history }: Props) {
   const loanIndex = match.params.loanId
   const ownName = 'Satoshi Nakamoto'
   const ownAccount = useOwnAccount()
   const loanData: LoanData = useBorrowedLoanById(ownAccount, loanIndex)
   const [lenderName, serLenderName] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  let totalDebit = 0
+  function payLoan(loan: LoanData, index) {
+    setIsLoading(true)
+    setError(null)
+
+    approveDAITransfer(loan.expectedAmount, ownAccount)
+      .then(() => {
+        console.log('dai transfer approved payDebt!')
+        return payDebt(index, ownAccount)
+      })
+      .then(() => {
+        console.log('finished both contracts successfully - PayDebt')
+        history.push('/loaned')
+      })
+      .catch(error => {
+        console.log('error', error)
+        setError(error)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }
 
   if (loanData) {
     getContactByAddress(loanData.lender).then(lender => {
@@ -53,17 +78,41 @@ export default function ViewBorrowedContract({ match }: Props) {
         serLenderName(lender.data.profile.name)
       }
     })
-    // TODO: interest should be read from smart contract
-    loanData.interest = 1500
 
-    totalDebit = calculateSimpleInterest(
-      loanData.amount,
-      loanData.interest,
-    ).toFixed(2)
   } else {
     return (
       <Layout title="Contract: ">
         <h1>Loading</h1>
+      </Layout>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <Layout title="Approving contract">
+        <h1>Loading</h1>
+      </Layout>
+    )
+  }
+
+  if (error) {
+    return (
+      <Layout title="Error">
+        <FormContainer>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+
+          <FormActions>
+            {loanData.status === "0" && (
+              <Button onClick={() => payLoan(loanData, loanIndex)} primary>
+                Retry
+              </Button>
+            )}
+
+            <LinkButton to="/loaned">
+              Return to loans
+            </LinkButton>
+          </FormActions>
+        </FormContainer>
       </Layout>
     )
   }
@@ -105,11 +154,11 @@ export default function ViewBorrowedContract({ match }: Props) {
           <Fieldset legend="Loan terms">
             <p>
               {ownName} agrees to loan {lenderName}{' '}
-              <strong>{formatNumber(loanData.amount)} DAI</strong> upon signing
+              <strong>{fromWei(loanData.amount)} DAI</strong> upon signing
               this contract. {lenderName} agrees to pay {ownName} back loan
               amount plus APR of{' '}
-              <strong>{formatNumber(loanData.interest)}%</strong>. The total
-              payback amount is <strong>{formatNumber(totalDebit)} DAI</strong>{' '}
+              <strong>{calculateInterestWithAmounts(loanData.amount, loanData.expectedAmount)}%</strong>. The total
+              payback amount is <strong>{fromWei(loanData.expectedAmount)} DAI</strong>{' '}
               due on {humanReadableDate(loanData.dueDate * 1000)}.
             </p>
           </Fieldset>
@@ -142,6 +191,9 @@ export default function ViewBorrowedContract({ match }: Props) {
 
           <FormActions>
             <LinkButton to="/borrowed">Return</LinkButton>
+            {loanData.status === "1" && (
+              <Button onClick={ () => payLoan(loanData, loanIndex)}>Pay Loan</Button>
+            )}
           </FormActions>
         </div>
       </FormContainer>

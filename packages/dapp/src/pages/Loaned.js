@@ -1,9 +1,8 @@
 // @flow
 import React from 'react'
-import { useOwnAccount, useLendedLoans } from 'services/LoanService'
+import { useOwnAccount, useLendedLoans, web3 } from 'services/LoanService'
 import Layout from 'ui/Layouts/default'
 import LoanStatus from 'ui/LoanStatus'
-import formatNumber from 'util/formatNumber'
 import { Link } from 'react-router-dom'
 import Table from 'ui/Table'
 
@@ -32,8 +31,8 @@ export default function Loaned() {
               </td>
               <td>{loan.name}</td>
               <td>{loan.borrower}</td>
-              <td>{formatNumber(loan.amount)} DAI</td>
-              <td>{formatNumber(loan.expectedAmount)} DAI</td>
+              <td>{web3.utils.fromWei(loan.amount)} DAI</td>
+              <td>{web3.utils.fromWei(loan.expectedAmount)} DAI</td>
               <td>
                 <Link to={`/view-contract/lended/${key}`}>View contract</Link>
               </td>
