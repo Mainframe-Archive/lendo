@@ -4,7 +4,6 @@ import Web3 from 'web3'
 import { loanAbi, getLoanContractAddress } from 'contracts/loan'
 import { erc20Abi, getDaiContractAddress } from 'contracts/erc20'
 import type { Address, LoanData, NewLoanData } from 'types'
-import { toIntString } from 'util/formatNumber'
 import type { Contact } from '@mainframe/sdk/cjs/types'
 import calculateSimpleInterest from '../util/calculateSimpleInterest'
 
@@ -42,21 +41,24 @@ export function requestLoan(
   const networkVersion = getNetworkVersion()
   const loanContract = getLoanContract(networkVersion)
 
-  const expectedAmount = calculateSimpleInterest(data.loanAmount, data.interest)
+  const expectedAmount = calculateSimpleInterest(data.loanAmount, data.interest).toString()
+
+  const amountToWei = web3.utils.toWei(data.loanAmount, 'ether')
+  const expectedAmountToWei = web3.utils.toWei(expectedAmount, 'ether')
 
   return loanContract.methods
     .requestLoan(
       data.selectedContact.ethAddress,
       data.loanName,
-      parseInt(toIntString(data.loanAmount)),
+      amountToWei,
       new Date(data.dueDate).getTime() / 1000,
-      expectedAmount
+      expectedAmountToWei
     )
     .send({ from: senderAddress })
 }
 
 export function approveDAITransfer(
-  loan: LoanData,
+  amountToApprove: number,
   senderAddress: Address,
 ): Promise<void> {
   const networkVersion = getNetworkVersion()
@@ -64,7 +66,7 @@ export function approveDAITransfer(
   const loanContractAddress = getLoanContractAddress(networkVersion)
 
   return DAIContract.methods
-    .approve(loanContractAddress, Number(loan.amount))
+    .approve(loanContractAddress, amountToApprove)
     .send({ from: senderAddress })
 }
 
@@ -76,6 +78,16 @@ export function approveLoan(
   const loanContract = getLoanContract(networkVersion)
 
   return loanContract.methods.approveLoan(index).send({ from: senderAddress })
+}
+
+export function payDebt(
+  index: number,
+  senderAddress: Address,
+): Promise<void> {
+  const networkVersion = getNetworkVersion()
+  const loanContract = getLoanContract(networkVersion)
+
+  return loanContract.methods.payDebt(index).send({ from: senderAddress })
 }
 
 export function useOwnAccount(): Address | null {

@@ -18,8 +18,8 @@ import {
 } from 'services/LoanService'
 import type { LoanData } from 'types'
 import styled from 'styled-components'
-import formatNumber from 'util/formatNumber'
-import calculateSimpleInterest from 'util/calculateSimpleInterest'
+import { fromWei } from 'util/formatNumber'
+import { calculateInterestWithAmounts } from 'util/calculateSimpleInterest'
 import { format } from 'date-fns'
 
 const EthAddress = styled.span`
@@ -50,19 +50,10 @@ export default function ViewLoanedContract({ match, history }: Props) {
   const loanData: LoanData = useLendedLoanById(ownAccount, loanIndex)
   const [borrowerName, setBorrowerName] = useState('')
 
-  let totalDebit = 0
-
   if (loanData) {
-    getContactByAddress(loanData.borrower).then(borrower =>
-      setBorrowerName(borrower.data.profile.name),
-    )
-    // TODO: interest should be read from smart contract
-    loanData.interest = 1500
-
-    totalDebit = calculateSimpleInterest(
-      loanData.amount,
-      loanData.interest,
-    ).toFixed(2)
+    getContactByAddress(loanData.borrower).then(borrower => {
+      if (borrower) setBorrowerName(borrower.data.profile.name)
+    })
   } else {
     return (
       <Layout title="Contract: ">
@@ -75,7 +66,7 @@ export default function ViewLoanedContract({ match, history }: Props) {
     setIsLoading(true)
     setError(null)
 
-    approveDAITransfer(loan, ownAccount)
+    approveDAITransfer(loan.amount, ownAccount)
       .then(() => {
         console.log('dai transfer approved!')
         return approveLoan(index, ownAccount)
@@ -86,6 +77,7 @@ export default function ViewLoanedContract({ match, history }: Props) {
       })
       .catch(error => {
         setError(error)
+        console.log('error', error)
       })
       .finally(() => {
         setIsLoading(false)
@@ -159,12 +151,12 @@ export default function ViewLoanedContract({ match, history }: Props) {
           <Fieldset legend="Loan terms">
             <p>
               {ownName} agrees to loan {borrowerName}{' '}
-              <strong>{formatNumber(loanData.amount)} DAI</strong> upon signing
+              <strong>{fromWei(loanData.amount)} DAI</strong> upon signing
               this contract. {borrowerName} agrees to pay {ownName} back loan
               amount plus APR of{' '}
-              <strong>{formatNumber(loanData.interest)}%</strong>. The total
-              payback amount is <strong>{formatNumber(totalDebit)} DAI</strong>{' '}
-              due on {humanReadableDate(loanData.dueDate * 1000)}.
+              <strong>{calculateInterestWithAmounts(loanData.amount, loanData.expectedAmount)}%</strong>. The total
+              payback amount is <strong>{fromWei(loanData.expectedAmount)} DAI</strong>{' '}
+              due on {humanReadableDate(loanData.dueDate*1000)}.
             </p>
           </Fieldset>
 
