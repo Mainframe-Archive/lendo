@@ -44,7 +44,7 @@ export function requestLoan(
   const expectedAmount = calculateSimpleInterest(data.loanAmount, data.interest).toString()
 
   const amountToWei = web3.utils.toWei(data.loanAmount, 'ether')
-  const expectedAmounToWei = web3.utils.toWei(expectedAmount, 'ether')
+  const expectedAmountToWei = web3.utils.toWei(expectedAmount, 'ether')
 
   return loanContract.methods
     .requestLoan(
@@ -52,7 +52,7 @@ export function requestLoan(
       data.loanName,
       amountToWei,
       new Date(data.dueDate).getTime() / 1000,
-      expectedAmounToWei
+      expectedAmountToWei
     )
     .send({ from: senderAddress })
 }
